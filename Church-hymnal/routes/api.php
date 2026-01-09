@@ -6,7 +6,7 @@ use App\Http\Controllers\FavoriteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-//public users(no login) can read hymns
+//public users(no login) can only read hymns
 Route::get('/hymns',[HymnController::class, 'index']);
 Route::get('/hymns/{id}',[HymnController::class, 'show']);
 Route::get('/search',[HymnController::class, 'search']); //search hymns
