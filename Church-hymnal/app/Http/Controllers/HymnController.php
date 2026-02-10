@@ -8,9 +8,17 @@ use Illuminate\Http\Request;
 class HymnController extends Controller
 {
     //Get the hymns
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Hymn::all(), 200);
+        $query = Hymn::query();
+
+        if ($request->has('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('lyrics', 'like', '%' . $request->search . '%')
+                  ->orWhere('hymn_number', 'like', '%' . $request->search . '%');
+        }
+
+        return $query->paginate(20);
     }
 
     //Store a new hymn in storage.
