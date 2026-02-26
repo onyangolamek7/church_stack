@@ -1,1 +1,392 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 /* You can add global styles to this file, and also import other style files */
+/* Global Styles - Israel.ca Wende Injili */
+
+:root {
+  --green-dark: #1b5e20;
+  --green-main: #2e7d32;
+  --green-mid: #388e3c;
+  --green-light: #81c784;
+  --green-pale: #c8e6c9;
+  --green-bg: #f1f8e9;
+  --gold: #f9a825;
+  --gold-light: #fff8e1;
+  --white: #ffffff;
+  --text-dark: #1a2e1a;
+  --text-mid: #3e5e3e;
+  --text-light: #558b2f;
+  --shadow: 0 4px 20px rgba(30, 90, 30, 0.12);
+  --radius: 12px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--green-bg);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+}
+
+a {
+  color: var(--green-main);
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+}
+
+input, select, textarea {
+  font-family: 'Lato', sans-serif;
+}
+
+/* Shared utility classes */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--green-pale);
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  background: var(--green-main);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+  background: var(--green-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--green-main);
+  border: 2px solid var(--green-main);
+}
+
+.btn-secondary:hover {
+  background: var(--green-pale);
+  transform: translateY(-1px);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 700;
+  color: var(--green-main);
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--green-pale);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  background: #fff;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--green-light);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.alert-success {
+  background: var(--green-pale);
+  color: var(--green-dark);
+  border-left: 4px solid var(--green-main);
+}
+
+.alert-error {
+  background: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #e53935;
+}
+
+/* Hymn list items */
+.hymn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hymn-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+
+.hymn-item:hover {
+  background: var(--green-bg);
+  border-color: var(--green-pale);
+}
+
+.hymn-number {
+  font-weight: 700;
+  color: var(--green-light);
+  font-size: 0.9rem;
+  min-width: 40px;
+}
+
+.hymn-title {
+  flex: 1;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--text-dark);
+}
+
+.favorite-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Sermon items */
+.sermon-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--green-pale);
+}
+
+.sermon-item:last-child {
+  border-bottom: none;
+}
+
+.sermon-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: var(--green-dark);
+  margin-bottom: 0.25rem;
+}
+
+.sermon-meta {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.sermon-excerpt {
+  color: var(--text-mid);
+  font-size: 0.97rem;
+}
+
+/* Search box */
+.search-box {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--green-pale);
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+  border-color: var(--green-light);
+}
+
+.search-box button,
+.search-box select {
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--green-main);
+  border-radius: 6px;
+  background: var(--green-main);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.search-box select {
+  background: #fff;
+  color: var(--text-dark);
+}
+
+/* Tithe amount options */
+.amount-options {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.amount-option {
+  flex: 1;
+  min-width: 80px;
+  padding: 0.85rem;
+  text-align: center;
+  border: 2px solid var(--green-pale);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--green-main);
+  transition: all 0.2s;
+}
+
+.amount-option:hover,
+.amount-option.selected {
+  background: var(--green-main);
+  color: #fff;
+  border-color: var(--green-main);
+}
+
+/* Profile */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--green-main);
+  color: #fff;
+  font-size: 2rem;
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-info h2 {
+  margin-bottom: 0.25rem;
+}
+
+.profile-info p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+/* Hymn verse */
+.hymn-verse {
+  background: var(--green-bg);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--green-light);
+}
+
+.hymn-verse-number {
+  display: block;
+  font-weight: 700;
+  color: var(--green-light);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.hymn-verse p {
+  color: var(--text-mid);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+/* Tithe form */
+.tithe-form {
+  max-width: 600px;
+  margin: 0 auto;
+}

@@ -1,0 +1,231 @@
+<title>Online Giving | ISRAEL CHURCH OF AFRICA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<div class="container">
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1>Online Giving</h1>
+      <p>Support the ministry through your faithful giving. Every contribution makes a difference in our community and beyond.</p>
+    </div>
+
+    <!-- VERSE BANNER -->
+    <div class="verse-banner">
+      <p>"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver."</p>
+      <span>— 2 Corinthians 9:7</span>
+    </div>
+
+    <!-- GRID: Forms + Info -->
+    <div class="grid-2">
+
+      <!-- LEFT: GIVING FORMS -->
+      <div>
+
+        <!-- ── CARD 1: Full Tithe Form (AngularJS-style) ── -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <h2>Give Your Tithe</h2>
+
+          <!-- Success alert -->
+          <div class="alert alert-success" id="tithe-success">
+            🙏 Thank you for your generous contribution! Your gift has been received.
+          </div>
+
+          <form id="tithe-form" onsubmit="submitTithe(event)">
+
+            <!-- Amount quick-select -->
+            <div class="form-group">
+              <label>Select Amount</label>
+              <div class="amount-options">
+                <div class="amount-option" id="opt-100"  onclick="selectAmount(100)">100 KES</div>
+                <div class="amount-option" id="opt-200"  onclick="selectAmount(200)">200 KES</div>
+                <div class="amount-option" id="opt-500" onclick="selectAmount(500)">500 KES</div>
+              </div>
+            </div>
+
+            <!-- Custom amount -->
+            <div class="form-group">
+              <label>Custom Amount (KES)</label>
+              <input type="number" id="tithe-amount" placeholder="Enter amount" min="1" required />
+            </div>
+
+            <!-- Name -->
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="tithe-name" placeholder="Your name" required />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="tithe-email" placeholder="your.email@example.com" required />
+            </div>
+
+            <!-- Payment method -->
+            <div class="form-group">
+              <label>Payment Method</label>
+              <select id="tithe-method" required>
+                <option value="">Select method</option>
+                <option value="card">Credit / Debit Card</option>
+                <option value="bank">Bank Transfer</option>
+                <option value="paypal">PayPal</option>
+              </select>
+              <div class="method-icons">
+                <span class="method-icon">💳 Card</span>
+                <span class="method-icon">🏦 Bank</span>
+                <span class="method-icon">🅿 PayPal</span>
+              </div>
+            </div>
+
+            <!-- Message -->
+            <div class="form-group">
+              <label>Prayer Request / Message <em style="font-weight:300;">(Optional)</em></label>
+              <textarea id="tithe-message" placeholder="Add a prayer request or message..."></textarea>
+            </div>
+
+            <button type="submit" class="btn" id="tithe-btn">
+              Give $<span id="give-amount-label">0</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ── CARD 2: MPesa / Quick Give (Angular-style) ── -->
+        <div class="card">
+          <h2>Quick Give via MPesa</h2>
+          <div class="mpesa-badge">MPesa Supported</div>
+
+          <!-- Success message -->
+          <p class="success-message" id="mpesa-success">
+            ✅ Payment initiated! Check your phone for the MPesa prompt.
+          </p>
+
+          <form id="mpesa-form" onsubmit="submitMpesa(event)">
+
+            <div class="form-group">
+              <label>Amount (KES)</label>
+              <input type="number" id="mpesa-amount" placeholder="e.g. 500" min="1" required />
+            </div>
+
+            <div class="form-group">
+              <label>Phone Number (MPesa)</label>
+              <input type="tel" id="mpesa-phone" placeholder="07XXXXXXXX" required
+                     pattern="^0[17]\d{8}$" title="Enter a valid Kenyan phone number e.g. 0712345678" />
+            </div>
+
+            <div class="form-group">
+              <label>Notes <em style="font-weight:300;">(Optional)</em></label>
+              <textarea id="mpesa-notes" placeholder="Tithe, Offering, Building Fund..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-mpesa" id="mpesa-btn">
+              Give Now via MPesa
+            </button>
+          </form>
+        </div>
+
+      </div><!-- /LEFT -->
+
+      <!-- RIGHT: INFO SIDEBAR -->
+      <div class="giving-info">
+
+        <div class="info-block">
+          <h3>🛡 Secure & Trusted</h3>
+          <p>All transactions are encrypted and processed through secure payment gateways. Your financial information is never stored on our servers.</p>
+          <ul>
+            <li>Receipts sent via email</li>
+          </ul>
+        </div>
+
+        <div class="info-block">
+          <h3>📋 Giving Categories</h3>
+          <ul>
+            <li>Tithe (10% of income)</li>
+            <li>Sunday Offering</li>
+            <li>Building Fund</li>
+            <li>Missions & Outreach</li>
+            <li>Youth Ministry</li>
+          </ul>
+        </div>
+
+        <div class="info-block">
+          <h3>❓ Need Help?</h3>
+          <p>For questions about giving, tax receipts, or to set up recurring donations, please contact our finance office:</p>
+          <p style="margin-top:0.75rem;">
+            📧 <a href="mailto:finance@icachurch.org" style="color:#2e7d32;">finance@icachurch.org</a><br>
+            📞 +254 748 831 299
+          </p>
+        </div>
+
+        <div class="info-block">
+          <h3>🔁 Recurring Giving</h3>
+          <p>Set up automatic weekly or monthly giving to stay consistent in your generosity. Contact us to get started.</p>
+        </div>
+
+      </div><!-- /RIGHT -->
+
+    </div><!-- /grid-2 -->
+  </div><!-- /container -->
+
+  <!-- =====================
+       JAVASCRIPT
+  ===================== -->
+  <script>
+    // ── Amount quick-select ──────────────────────────────
+    let selectedAmount = null;
+
+    function selectAmount(val) {
+      // Clear all
+      ['100','200','500'].forEach(v => {
+        document.getElementById('opt-' + v).classList.remove('selected');
+      });
+      selectedAmount = val;
+      document.getElementById('opt-' + val).classList.add('selected');
+      document.getElementById('tithe-amount').value = val;
+      updateGiveLabel();
+    }
+
+    document.getElementById('tithe-amount').addEventListener('input', function() {
+      // Deselect quick buttons if custom value typed
+      ['100','200','500'].forEach(v => {
+        document.getElementById('opt-' + v).classList.remove('selected');
+      });
+      updateGiveLabel();
+    });
+
+    function updateGiveLabel() {
+      const val = document.getElementById('tithe-amount').value;
+      document.getElementById('give-amount-label').textContent = val || '0';
+    }
+
+    // ── Tithe form submit ────────────────────────────────
+    function submitTithe(e) {
+      e.preventDefault();
+      const btn = document.getElementById('tithe-btn');
+      btn.textContent = 'Processing…';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById('tithe-success').classList.add('show');
+        document.getElementById('tithe-form').reset();
+        ['25','50','100'].forEach(v => document.getElementById('opt-'+v).classList.remove('selected'));
+        document.getElementById('give-amount-label').textContent = '0';
+        btn.textContent = 'Give $0';
+        btn.disabled = false;
+        setTimeout(() => document.getElementById('tithe-success').classList.remove('show'), 5000);
+      }, 1200);
+    }
+
+    // ── MPesa form submit ────────────────────────────────
+    function submitMpesa(e) {
+      e.preventDefault();
+      const btn = document.getElementById('mpesa-btn');
+      btn.textContent = 'Sending prompt…';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById('mpesa-success').classList.add('show');
+        document.getElementById('mpesa-form').reset();
+        btn.textContent = 'Give Now via MPesa';
+        btn.disabled = false;
+        setTimeout(() => document.getElementById('mpesa-success').classList.remove('show'), 6000);
+      }, 1500);
+    }
+  </script>

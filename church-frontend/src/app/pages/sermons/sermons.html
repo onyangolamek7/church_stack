@@ -1,0 +1,74 @@
+<!--
+<section class="card">
+  <h2>Upcoming Sermon</h2>
+  <ng-container *ngIf="upcomingSermon; else noUpcoming">
+  <h3>{{ upcomingSermon.title }}</h3>
+  <p *ngIf="upcomingSermon.description">{{ upcomingSermon.description }}</p>
+  <p *ngIf="upcomingSermon.preacher"><strong>Preacher:</strong>{{upcomingSermon.preacher}}</p>
+  <p *ngIf="upcomingSermon.service_date"><strong>Date:</strong>{{upcomingSermon.service_date | date:'fullDate'}}</p>
+</ng-container>
+
+<ng-template #noUpcoming>
+  <p>No upcoming sermons scheduled.</p>
+</ng-template>
+
+</section>
+
+<section class="card">
+  <h2>Previous Sermons</h2>
+<ul *ngIf="pastSermons.length > 0; else noPast">
+  <li *ngFor="let sermon of pastSermons">
+    <h4>{{ sermon.title }}</h4>
+
+    <p *ngIf="sermon.description">{{ sermon.description }}</p>
+    <p *ngIf="sermon.preacher"><strong>Preacher:</strong>{{sermon.preacher}}</p>
+    <p *ngIf="sermon.service_date">{{sermon.service_date | date:'mediumDate'}}</p>
+
+    <hr>
+  </li>
+</ul>
+
+<ng-template #noPast>
+  <p>No previous sermons available.</p>
+</ng-template>
+
+</section>
+-->
+<section class="sermons-hero">
+  <h1>Church Sermons</h1>
+  <p>Grow spiritually through powerful teachings</p>
+</section>
+
+<section class="upcoming-section" *ngIf="upcoming.length">
+  <h2>Upcoming Services</h2>
+
+  <div class="sermon-grid">
+    <div *ngFor="let sermon of upcoming" class="sermon-card upcoming">
+      <h3>{{ sermon.title }}</h3>
+      <p class="date">{{ sermon.service_date | date:'fullDate' }}</p>
+      <p>{{ sermon.preacher }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="past-section">
+  <h2>Recent Sermons</h2>
+
+  <div class="sermon-grid">
+    <div *ngFor="let sermon of sermons" class="sermon-card">
+      <h3>{{ sermon.title }}</h3>
+      <p class="date">{{ sermon.service_date | date:'mediumDate' }}</p>
+      <p>{{ sermon.preacher }}</p>
+
+      <div class="actions">
+        <a *ngIf="sermon.video_url" [href]="sermon.video_url" target="_blank" class="btn video">
+          Watch Video
+        </a>
+
+        <a *ngIf="sermon.audio_url" [href]="sermon.audio_url" target="_blank" class="btn audio">
+          Listen Audio
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,72 @@
+<div class="container">
+<div class="hero">
+  <h1>Welcome to Wende Injili</h1>
+  <p style="color: #558b2f; font-size: 1.2rem; margin-top: 1rem;">
+    Join our community in worship and praise
+  </p>
+</div>
+
+<hr>
+
+<div class="prayer-box">
+  <h2>The Lord’s Prayer</h2>
+  <div class="prayer-text">
+    <p>
+      Our Father, who art in heaven,<br>
+      Hallowed br thy Name.<br>
+      Thy Kingdom come.<br>
+      Thy will be done on earth,<br>
+      As it is in heaven.<br>
+      Give us this day our daily bread.<br>
+      And forgive us our trespasses,<br>
+      As we forgive those who trespass against us.<br>
+      And lead us not into temptation,<br>
+      But deliver us from evil.<br>
+      For thine is the kingdom,<br>
+      The power, and the glory,<br>
+      For ever and ever.<br>
+      <strong>Amen.</strong>
+    </p>
+  </div>
+</div>
+
+<hr>
+
+<div class="verse-of-day">
+  <h3>📖 Verse of the Day</h3>
+  <p class="verse-text">
+    "For God so loved the world that he gave his one and only Son,
+    that whoever believes in Him shall not perish but have eternal life."
+  </p>
+  <p class="verse-reference">- John 3:16</p>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Featured Hymns</h2>
+    <div class="hymn-list">
+      <div class="hymn-item" *ngFor="let hymn of hymns" (click)="goToHymn(hymn.id)">
+        <span class="hymn-number">#{{ hymn.id }}</span>
+        <span class="hymn-title">{{ hymn.title}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Upcoming Sermon</h2>
+    <div class="sermon-item">
+      <h3 class="sermon-title">Walking in Faith</h3>
+      <p class="sermon-meta">Pastor Jonathan • Last Sunday</p>
+      <p class="sermon-excerpt">
+        Discover the power of walking by faith and not by sight,
+        trusting in God's promises even when the path seems unclear...
+      </p>
+    </div>
+    <button class="btn" (click)="goToSermons()">View All Sermons</button>
+  </div>
+
+</div>
+<hr>
+
+
+</div>
