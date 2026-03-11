@@ -1,23 +1,54 @@
-<div class="container">
+<div class="card">
 
-  <h2>Hymns</h2>
+  <h2>Hymn Collection</h2>
 
   <!-- SEARCH -->
   <div class="search-box">
     <input
     type="text"
     placeholder="Search hymns..."
-    [ngModel]="searchTerm"
-    ngChange="searchHymns()"
+    [(ngModel)]="searchQuery"
+    (ngModelChange)="onSearch()"
   />
-  <button ngClick="searchHymns()">Search</button>
+  <button (click)="onSearch()">Search</button>
   </div>
 
+  <div class="hymn-list">
+    <div *ngFor="let hymn of filteredHymns()" class="hymn-item" (click)="viewHymn(hymn)">
+      <span class="hymn-number">#{{ hymn.id }}</span>
+      <span class="hymn-title">{{ hymn.title }}</span>
+      <button
+      *ngIf="auth.isLoggedIn()"
+      class="favorite-btn"
+      (click)="toggleFavorite(hymn, $event)">
+      {{ hymn.isFavorite ? '❤️' : '🤍' }}
+      </button>
+    </div>
+
+      <p *ngIf="filteredHymns().length === 0" style="text-align: center; padding: 2rem; color: #558b2f;">
+        No hymns found. Try a different search.
+      </p>
+  </div>
+
+  <!--
   <button (click)="toggleShowFavoritesOnly()">
     {{showFavoritesOnly ? 'Show All Hymns' : 'Show My Favorites'}}
   </button>
+-->
 
-  <!-- HYMN LIST -->
+<!--
+<div class="card">
+  <button class="btn btn-secondary" ngClick="goBack()">← Back to Hymns</button>
+</div>
+
+<div class="hymn-detail card">
+  <h1>{{hymn.title}}</h1>
+  <p style="text-align: center; color: #558b2f; margin-bottom: 2rem;">
+    Hymn #{{hymn.number}}
+  </p>
+</div> -->
+
+  <!-- HYMN LIST
   <div class="hymn-list">
     <div *ngIf="filteredHymns.length > 0; else noHymns">
 
@@ -28,7 +59,7 @@
 {{ hymn.lyrics }}
       </pre>
 
-      <button (click)="openModal(hymn)">
+      <button (click)="openModal(hymn: Hymn)">
         View
       </button>
 
@@ -44,30 +75,25 @@
 
   <ng-template #noHymns>
     <p>No hymns found.</p>
-  </ng-template>
+  </ng-template> -->
 
   <!-- pagination-->
-   <div class="pagination" *ngIf="lastPage > 1">
-
-    <button
-    (click)="goToPage(currentPage - 1)"
-    [disabled]="currentPage === 1">
-    Previous
+   <div class="pagination" *ngIf="hymnsService.lastPage() > 1">
+    <button (click)="goToPage(hymnsService.currentPage() - 1)" [disabled]="hymnsService.currentPage() === 1">
+      Previous
     </button>
 
   <button
     *ngFor="let page of pages"
     (click)="goToPage(page)"
-    [class.active]="page === currentPage">
+    [class.active]="page === hymnsService.currentPage()"
+    >
     {{ page }}
     </button>
 
-    <button
-    (click)="goToPage(currentPage + 1)"
-    [disabled]="currentPage === lastPage">
-    Next
+    <button (click)="goToPage(hymnsService.currentPage() + 1)" [disabled]="hymnsService.currentPage() === hymnsService.lastPage()">
+      Next
     </button>
-
   </div>
 
   <!-- Modal -->
@@ -83,11 +109,6 @@
       </p>
     </div>
 
-
    </div>
-
-
-
-
 </div>
 

@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Injectable } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, Injectable, OnInit } from '@angular/core';
+import { FormBuilder, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TitheService } from '../../services/tithe.service';
+import { CreateTitheDto } from '../../models/create-tithe.dto';
+import { Tithe } from '../../models/tithe.model';
 
 @Component({
   selector: 'app-tithe',
@@ -10,11 +12,11 @@ import { TitheService } from '../../services/tithe.service';
   templateUrl: './tithe.html',
   styleUrls: ['./tithe.css'],
 })
-export class Tithe {
+export class TitheComponent implements OnInit {
 
-  private fb = inject(FormBuilder);
-  private titheService = inject(TitheService);
+  private fb = inject(NonNullableFormBuilder);
 
+  tithes: Tithe[] = [];
   loading = false;
   successMessage = '';
   errorMessage = '';
@@ -22,73 +24,62 @@ export class Tithe {
 
   titheForm = this.fb.group({
     giver_name: ['', Validators.required],
-    giver_email: ['', [Validators.required]],
-    amount: [null as number | null, [Validators.required, Validators.min(1)]],
-    payment_method: ['', Validators.required]
-  });
-
-  mpesaForm = this.fb.group({
+    giver_email: [''],
     giver_phone: ['', [Validators.required, Validators.pattern(/^0[17]\d{8}$/)]],
-    amount: [null as number | null, [Validators.required, Validators.min(1)]],
-    notes: ['']
+    amount: [0, [Validators.required, Validators.min(1)]],
+    currency: ['KES', Validators.required],
+    payment_method: ['mpesa'],
   });
 
-  selectAmount(amount: number): void {
-    this.selectedAmount = amount;
-    this.titheForm.patchValue({ amount });
+  constructor(private titheService: TitheService) {}
+
+  ngOnInit(): void {
+    this.loadTithes();
   }
 
-  submitTithe(): void {
-    if (this.titheForm.invalid) return;
-
-    this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
-
-    this.titheService.giveTithe(this.titheForm.getRawValue())
-    .subscribe({
-      next: (res: any) => {
-        this.successMessage =
-        `${res.message} - Ref: ${res.tithe.transaction_reference}`;
-        this.titheForm.reset();
-        this.selectedAmount = null;
-        this.loading = false;
+  loadTithes(): void {
+    this.titheService.getTithes().subscribe({
+      next: (res: Tithe[]) => {
+        this.tithes = res;
       },
-      error: (err: any) => {
-        this.errorMessage =
-        err?.error?.message || 'Something went wrong';
-        this.loading = false;
+      error: (err) => {
+        console.error('Error fetching tithes', err);
       }
     });
   }
 
-  submitMpesa(): void {
-    if (this.mpesaForm.invalid) return;
-
-    const payload = {
-      ...this.mpesaForm.value,
-      payment_method: 'mpesa',
-      currency: 'KES',
-      giver_name: 'MPesa Donor'
-    };
+  submit(): void {
+    if (this.titheForm.invalid) {
+      this.titheForm.markAllAsTouched();
+      return;
+    }
 
     this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
 
-    this.titheService.giveTithe(payload)
-      .subscribe({
-        next: (res: any) => {
-          this.successMessage =
-            `MPesa initiated — Ref: ${res.tithe.transaction_reference}. Check phone.`;
-          this.mpesaForm.reset();
-          this.loading = false;
-          },
-        error: (err: any) => {
-          this.errorMessage =
-            err?.error?.message || 'MPesa failed';
-          this.loading = false;
-        }
+    const payload: CreateTitheDto = this.titheForm.getRawValue();
+
+    this.titheService.createTithe(payload).subscribe({
+     next: () => {
+      this.successMessage = 'Tithe submitted successfully.';
+      this.titheForm.reset({
+        giver_name: '',
+        giver_email: '',
+        giver_phone: '',
+        amount: 0,
+        currency: 'KES',
+        payment_method: 'mpesa'
       });
+      this.loadTithes();
+      this.loading = false;
+     },
+     error: (err) => {
+      console.error('Error creating tithe', err);
+      this.loading = false;
+     }
+    });
   }
+
+  selectAmount(amount: number): void {
+      this.titheForm.patchValue({ amount});
+    }
 }

@@ -11,7 +11,12 @@ export const routes: Routes = [
   {
     path: 'hymns',
     loadComponent: () =>
-      import('./pages/hymns/hymns').then(m => m.Hymns)
+      import('./pages/hymns/hymns').then(m => m.HymnsComponent)
+  },
+  {
+    path: 'hymns/:id',
+    loadComponent: () =>
+      import('./pages/hymn-detail/hymn-detail').then(m =>m.HymnDetail)
   },
   {
     path: 'sermons',
@@ -21,7 +26,7 @@ export const routes: Routes = [
   {
     path: 'tithe',
     loadComponent: () =>
-      import('./pages/tithe/tithe').then(m => m.Tithe)
+      import('./pages/tithe/tithe').then(m => m.TitheComponent)
   },
   {
     path: 'login',

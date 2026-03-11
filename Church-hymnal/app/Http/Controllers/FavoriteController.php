@@ -13,33 +13,49 @@ class FavoriteController extends Controller
         return response()->json($request->user()->favorites()->with('hymn')->get());
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $hymnId)
     {
-        $validated = $request->validate([
-            'hymn_id' => 'required|exists:hymns,id',
-        ]);
-       
-        $request->user()->favorites()->create(['hymn_id' => $validated['hymn_id']]);
+        $hymn = Hymn::findOrFail($hymnId);
+
+        $already = $request->user()->favorites()
+        ->where('hymn_id', $hymn->id)
+        ->exists();
+        if($already) {
+            return response()->json(['message' => 'Already favorited'], 200);
+        }
+
+        $request->user()->favorites()->create(['hymn_id' => $hymn->id]);
         return response()->json(['message' => 'Added to favorites'],201);
     }
 
-    public function destroy(Request $request, Hymn $hymn)
+    public function destroy(Request $request, $hymnId)
     {
+        $hymn = Hymn::findOrFail($hymnId);
+
         $request->user()->favorites()->where('hymn_id', $hymn->id)->delete();
         return response()->json(['message' => 'Removed from favorites']);
     }
 
-    public function toggleFavorite(Request $request, Hymn $hymn)
+    /*public function toggle($hymnId)
     {
-        $favorite = $request->user()->favorites()->where('hymn_id', $hymn->id)->first();
+        $user = auth()->user();
 
-        if ($favorite) {
-            $request->user()->favorites()->detach('hymn_id', $hymn->id);
-            return response()->json(['message' => 'Removed from favorites']);
-        } else {
-            $request->user()->favorites()->attach(['hymn_id' => $hymn->id]);
-            return response()->json(['message' => 'Added to favorites'],201);
+        $favorites = Favorites::where('user_id', $user->id)
+        ->where('hymn_id', $hymnId)
+        ->first();
+
+        if ($favorites) {
+            $favorites->delete();
+            return response()->json(['message' => 'Removed']);
         }
-    }
+
+        Favorites::create([
+            'user_id' => $user->id,
+            'hymn_id' => $hymnId,
+        ]);
+
+        return response()->json(['message' => 'Added']);
+
+    }*/
 
 }

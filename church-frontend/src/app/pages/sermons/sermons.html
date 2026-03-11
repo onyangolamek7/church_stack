@@ -1,3 +1,120 @@
+<section class="sermons-hero">
+  <h1>Church Sermons</h1>
+  <p>Grow spiritually through powerful teachings</p>
+</section>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn" [class.active]="activeTab() === 'upcoming'" (click)="setTab('upcoming')">
+    Upcoming
+  </button>
+  <button class="tab-btn" [class.active]="activeTab() === 'previous'" (click)="setTab('previous')">
+    Previous
+  </button>
+</div>
+
+<!-- Loading -->
+@if (loading()) {
+  <div class="state-center">
+    <div class="spinner"></div>
+    <p>Loading sermons…</p>
+  </div>
+}
+
+<!-- Error -->
+@if (error()) {
+  <div class="state-center error">
+    <p>{{ error() }}</p>
+  </div>
+}
+
+<!-- Upcoming Tab -->
+@if (!loading() && !error() && activeTab() === 'upcoming') {
+  @if (upcoming().length === 0) {
+    <p class="empty">No upcoming sermons scheduled yet.</p>
+  } @else {
+    <div class="sermon-grid">
+      @for (sermon of upcoming(); track sermon.id) {
+        <div class="sermon-card upcoming">
+          <span class="badge upcoming-badge">📅 Upcoming</span>
+          <h3>{{ sermon.title }}</h3>
+          <p class="date">{{ formatDate(sermon.service_date) }}</p>
+          <p class="preacher">✦ {{ sermon.preacher }}</p>
+          <p class="desc">{{ sermon.description }}</p>
+
+          @if (sermon.hymns.length) {
+            <button class="hymns-toggle" (click)="toggleHymns(sermon.id)">
+              {{ expandedHymnSermonId() === sermon.id ? '▲ Hide Hymns' : '♪ Featured Hymns (' + sermon.hymns.length + ')' }}
+            </button>
+
+            @if (expandedHymnSermonId() === sermon.id) {
+              <ul class="hymns-list">
+                @for (hymn of sermon.hymns; track hymn.id) {
+                  <li>
+                    <span class="note">♪</span>
+                    {{ hymn.title }}
+                    @if (hymn.lyrics_preview) {
+                      <p class="lyrics">{{ hymn.lyrics_preview }}</p>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+}
+
+<!-- Previous Tab -->
+@if (!loading() && !error() && activeTab() === 'previous') {
+  @if (previous().length === 0) {
+    <p class="empty">No previous sermons found.</p>
+  } @else {
+    <div class="sermon-grid">
+      @for (sermon of previous(); track sermon.id) {
+        <div class="sermon-card">
+          <span class="badge completed-badge">✓ Completed</span>
+          <h3>{{ sermon.title }}</h3>
+          <p class="date">{{ formatDate(sermon.service_date) }}</p>
+          <p class="preacher">✦ {{ sermon.preacher }}</p>
+          <p class="desc">{{ sermon.description }}</p>
+
+          @if (sermon.hymns.length) {
+            <button class="hymns-toggle" (click)="toggleHymns(sermon.id)">
+              {{ expandedHymnSermonId() === sermon.id ? '▲ Hide Hymns' : '♪ Featured Hymns (' + sermon.hymns.length + ')' }}
+            </button>
+
+            @if (expandedHymnSermonId() === sermon.id) {
+              <ul class="hymns-list">
+                @for (hymn of sermon.hymns; track hymn.id) {
+                  <li>
+                    <span class="note">♪</span>
+                    {{ hymn.title }}
+                    @if (hymn.lyrics_preview) {
+                      <p class="lyrics">{{ hymn.lyrics_preview }}</p>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          }
+
+          <div class="actions">
+            @if (sermon.audio_url) {
+              <a [href]="sermon.audio_url" target="_blank" class="btn audio">🎧 Listen</a>
+            }
+            @if (sermon.video_url) {
+              <a [href]="sermon.video_url" target="_blank" class="btn video">▶ Watch</a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+}
+
 <!--
 <section class="card">
   <h2>Upcoming Sermon</h2>
@@ -34,6 +151,8 @@
 
 </section>
 -->
+
+<!--
 <section class="sermons-hero">
   <h1>Church Sermons</h1>
   <p>Grow spiritually through powerful teachings</p>
@@ -72,3 +191,4 @@
     </div>
   </div>
 </section>
+-->

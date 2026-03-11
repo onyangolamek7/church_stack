@@ -1,0 +1,44 @@
+<div class="card">
+  <button class="btn btn-secondary" (click)="goBack()">← Back to Hymns</button>
+</div>
+
+@if (loading) {
+  <div class="card loading" style="text-align: center; padding: 2rem; color: var(--text-light);">
+    Loading hymn...
+  </div>
+}
+
+@if (error) {
+  <div class="card">
+    <div class="alert alert-error">{{ error }}</div>
+  </div>
+}
+
+@if (hymn) {
+  <div class="hymn-detail card">
+    <h1>{{ hymn.title }}</h1>
+
+
+    <p class="hymn-number">
+      Hymn #{{ hymn.id }}
+    </p>
+
+    @for (verse of verses; track $index) {
+      <div class="hymn-verse">
+        <span class="hymn-verse-number">Verse {{ $index + 1 }}</span>
+
+        @for (line of verse; track $index) {
+          <p>{{ line }}</p>
+        }
+      </div>
+    }
+
+    @if (auth.isLoggedIn()) {
+      <div class="favorite-container">
+        <button class="btn" (click)="toggleFavorite()">
+          {{ hymn.isFavorite ? '❤️ Remove from favorites' : '🤍 Add to favorites' }}
+        </button>
+      </div>
+    }
+  </div>
+}

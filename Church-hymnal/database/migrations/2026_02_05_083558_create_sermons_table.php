@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('preacher')->nullable();
             $table->text('description')->nullable();
-            
+
             $table->dateTime('service_date');
 
             $table->longText('content')->nullable(); //sermon notes

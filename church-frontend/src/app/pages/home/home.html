@@ -45,7 +45,7 @@
   <div class="card">
     <h2>Featured Hymns</h2>
     <div class="hymn-list">
-      <div class="hymn-item" *ngFor="let hymn of hymns" (click)="goToHymn(hymn.id)">
+      <div class="hymn-item" *ngFor="let hymn of hymns()" (click)="goToHymn(hymn.id)">
         <span class="hymn-number">#{{ hymn.id }}</span>
         <span class="hymn-title">{{ hymn.title}}</span>
       </div>
@@ -54,14 +54,43 @@
 
   <div class="card">
     <h2>Upcoming Sermon</h2>
+
+    @if (sermonLoading()) {
+    <p class="loading-text">Loading…</p>
+  }
+
+  @if (!sermonLoading() && upcomingSermon()) {
     <div class="sermon-item">
-      <h3 class="sermon-title">Walking in Faith</h3>
-      <p class="sermon-meta">Pastor Jonathan • Last Sunday</p>
-      <p class="sermon-excerpt">
-        Discover the power of walking by faith and not by sight,
-        trusting in God's promises even when the path seems unclear...
-      </p>
+      <span class="days-pill">
+        {{ daysUntil(upcomingSermon()!.service_date) === 0 ? 'Today!' : daysUntil(upcomingSermon()!.service_date) + ' days away' }}
+      </span>
+      <h3 class="sermon-title">{{ upcomingSermon()!.title }}</h3>
+      <p class="sermon-meta">{{ upcomingSermon()!.preacher }} • {{ formatDate(upcomingSermon()!.service_date) }}</p>
+      <p class="sermon-excerpt">{{ upcomingSermon()!.description }}</p>
+
+      @if (upcomingSermon()!.hymns.length) {
+        <div class="hymns-preview">
+          <p class="hymns-label">♪ Featured Hymns</p>
+          @for (hymn of upcomingSermon()!.hymns; track hymn.id) {
+            <div class="hymn-row">
+              <button class="hymn-toggle-btn" (click)="toggleHymn(hymn.id)">
+                ♪ {{ hymn.title }}
+                <span>{{ expandedHymnId() === hymn.id ? '▲' : '▼' }}</span>
+              </button>
+              @if (expandedHymnId() === hymn.id && hymn.lyrics_preview) {
+                <p class="lyrics-preview">{{ hymn.lyrics_preview }}</p>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
+  }
+
+  @if (!sermonLoading() && !upcomingSermon()) {
+    <p class="empty-text">No upcoming sermon scheduled yet.</p>
+  }
+
     <button class="btn" (click)="goToSermons()">View All Sermons</button>
   </div>
 

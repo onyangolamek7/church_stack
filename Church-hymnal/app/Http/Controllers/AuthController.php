@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -18,13 +20,17 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'role' => 'user', //default role
-            'password' => Hash::make($validated['password']),
+            'name' => $request->name,
+            'email' => $request->email,
+            //'role' => 'user', //default role
+            'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'User registered', 'user' => $user]);
+        Mail::to($user->email)->send(new WelcomeMail($user));
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json(['message' => 'User registered', 'user' => $user, 'token' => $token], 201);
     }
 
     public function login(Request $request)
@@ -33,7 +39,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-        
+
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -46,7 +52,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out']);
+    }
+
+    public function profile(Request $request)
+    {
+        return response()->json($request->user());
     }
 }

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hymns', function (Blueprint $table) {
+        Schema::create('sermon_hymn', function (Blueprint $table) {
             $table->id();
-            $table->integer('number')->unique();
-            $table->string('title');
-            $table->longText('lyrics');
-            //$table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('sermon_id')->constrained()->onDelete('cascade');
+            $table->foreignId('hymn_id')->constrained()->onDelete('cascade');
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hymns');
+        Schema::dropIfExists('sermon_hymn');
     }
 };

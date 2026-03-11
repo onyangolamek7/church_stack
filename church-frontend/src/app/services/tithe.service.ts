@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CreateTitheDto } from '../models/create-tithe.dto';
+import { Tithe } from '../models/tithe.model';
+import { environment } from '../../environments/environment';
 
 export interface TitheResponse {
   message: string;
@@ -16,16 +19,16 @@ export interface TitheResponse {
   providedIn: 'root',
 })
 export class TitheService {
-  private BASE_URL = 'http://127.0.0.1:8000/api';
+  private apiUrl = `${environment.apiUrl}/tithes`;
 
   constructor(private http: HttpClient) {}
 
-  giveTithe(payload: any): Observable<TitheResponse> {
-    return this.http.post<TitheResponse>(
-      `${this.BASE_URL}/tithes`,
-      payload,
-      { withCredentials: true }
-    );
+  getTithes(): Observable<Tithe[]> {
+    return this.http.get<Tithe[]>(this.apiUrl);
+  }
+
+  createTithe(data: CreateTitheDto): Observable<Tithe> {
+    return this.http.post<Tithe>(this.apiUrl, data);
   }
 
 }

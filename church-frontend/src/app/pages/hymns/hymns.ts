@@ -1,20 +1,18 @@
+import { HymnsService } from './../../services/hymns.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth';
+import { Router } from '@angular/router';
+import { Hymn } from '../../models/hymn.model';
 
-interface HymnData {
-  id: number;
-  title: string;
-  lyrics: string;
-}
-
-interface PaginatedResponse {
+/*interface PaginatedResponse {
   data: HymnData[];
   current_page: number;
   last_page: number;
   total: number;
-}
+}*/
 
 @Component({
   selector: 'app-hymns',
@@ -24,11 +22,138 @@ interface PaginatedResponse {
   styleUrls: ['./hymns.css']
 })
 
-export class Hymns implements OnInit {
-  hymns: HymnData[] = [];
-  filteredHymns: HymnData[] = [];
+export class HymnsComponent implements OnInit {
+  hymnsService = inject(HymnsService);
+  auth = inject(AuthService);
+  private router = inject(Router);
+
+  searchQuery = '';
+
+  selectedHymn: Hymn | null = null;
+  isModalOpen = false;
+
+  pages: number[] = [];
+
+  hymns = computed(() => this.hymnsService.hymns());
+
+  filteredHymns = computed(() => {
+    const query = this.searchQuery.toLowerCase().trim();
+
+    if (!query) return this.hymns();
+
+    return this.hymns().filter(h =>
+      h.title.toLowerCase().includes(query) ||
+      h.number.toString().includes(query)
+    );
+  });
+
+  ngOnInit(): void {
+    this.loadHymns();
+  }
+
+  loadHymns(page: number = 1) {
+    this.hymnsService.getHymns(page).subscribe(res => {
+      this.pages = Array.from(
+        { length: res.last_page },
+        (_, i) => i + 1
+      );
+    });
+  }
+
+  onSearch() {}
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.hymnsService.lastPage()) return;
+
+    this.loadHymns(page);
+  }
+
+  openHymn(id: number) {
+    this.router.navigate(['/hymns',id]);
+  }
+
+  viewHymn(hymn: Hymn) {
+    this.selectedHymn = hymn;
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+    this.selectedHymn = null;
+  }
+
+  toggleFavorite(hymn: Hymn, event: Event) {
+    event.stopPropagation();
+
+    if (!this.auth.isLoggedIn()) return;
+    if (hymn.isFavorite) {
+      this.hymnsService.unfavoriteHymn(hymn.id).subscribe(() => {
+        this.hymnsService.updateFavoriteState(hymn.id, false);
+      });
+
+    } else {
+      this.hymnsService.favoriteHymn(hymn.id).subscribe(() => {
+        this.hymnsService.updateFavoriteState(hymn.id, true);
+      });
+    }
+  }
+}
+
+/*export class HymnsComponent implements OnInit{
+
+  hymnsService = inject(HymnsService);
+  auth = inject(AuthService);
+  router = inject(Router);
+  hymns: Hymn[] = []
+
+  selectedHymn: Hymn | null = null;
+  isModalOpen = false;
+
+  searchQuery = '';
+
+  //filteredHymns = computed(() => this.hymnsService.filteredHymns());
+
+  pages: number[] = [];
+
+  ngOnInit() {
+    this.hymnsService.loadHymns();
+  }
+
+  loadHymns(page: number = 1) {
+    this.hymnsService.loadHymns(page, this.searchQuery);
+    this.pages = Array.from(
+      { length: this.hymnsService.lastPage() },
+      (_, i) => i + 1
+    );
+    };
+  }
+
+  search() {
+    this.hymnsService.loadHymns(1,this.searchQuery);
+  }
+
+  goToPage(page:number) {
+    this.hymnsService.loadHymns(page,this.searchQuery)
+  }
+
+  toggleFavorite(hymn: Hymn, event: Event) {
+    event.stopPropagation();
+
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.hymnsService.toggleFavorite(hymn.id).subscribe();
+  }
+
+}*/
+
+/*export class Hymns implements OnInit {
+  hymnsService = inject(HymnsService)
+  hymns: Hymn[] = [];
+  filteredHymns: Hymn[] = [];
   searchTerm: string = '';
-  selectedHymn: HymnData | null = null;
+  selectedHymn: Hymn | null = null;
   isModalOpen = false;
 
   currentPage = 1;
@@ -54,7 +179,7 @@ private favoriteApiUrl = 'http://127.0.0.1:8000/api/favorites';
   }
 
   loadHymns(page: number = 1): void {
-    this.http.get<PaginatedResponse>(`${this.apiUrl}?page=${page}`)
+    this.http.get<HymnResponse>(`${this.apiUrl}?page=${page}`)
     .subscribe({
       next: (response) => {
         this.hymns = response.data;
@@ -71,7 +196,7 @@ private favoriteApiUrl = 'http://127.0.0.1:8000/api/favorites';
     });
   }
 
-  openModal(hymn: HymnData): void {
+  openModal(hymn: Hymn): void {
     this.selectedHymn = hymn;
     this.isModalOpen = true;
   }
@@ -126,7 +251,7 @@ private favoriteApiUrl = 'http://127.0.0.1:8000/api/favorites';
     });
   }
 
-  toggleFavorite(hymn: HymnData): void {
+  toggleFavorite(hymn: Hymn): void {
     this.http.post(`${this.favoriteApiUrl}/${hymn.id}`,{})
     .subscribe({
       next: () => {
@@ -147,3 +272,4 @@ private favoriteApiUrl = 'http://127.0.0.1:8000/api/favorites';
     this.applyFilters();
   }
 }
+*/
