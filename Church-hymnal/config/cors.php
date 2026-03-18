@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://church-frontend.up.railway.app'],
+    'allowed_origins' => ['http://churchstack-production.up.railway.app'],
 
     'allowed_origins_patterns' => [],
 
