@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Hymn } from '../models/hymn.model';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
 
 interface HymnResponse {
   data: Hymn[];
@@ -24,30 +24,8 @@ export class HymnsService {
 
   currentPage = signal<number>(1);
   lastPage = signal<number>(1);
-  /*private _search = signal('');
 
-  //public readonly signals
-  readonly hymns = this._hymns.asReadonly();
-  readonly loading = this._loading.asReadonly();
-  readonly error = this._error.asReadonly();
-
-  readonly currentPage = this._currentPage.asReadonly();
-  readonly lastPage = this._lastPage.asReadonly();
-  readonly search = this._search.asReadonly();*/
-
-  /*filteredHymns = computed(() => {
-    const q = this._search().toLowerCase();
-    if (!q) return this._hymns();
-
-    return this._hymns().filter(h =>
-      h.title.toLowerCase().includes(q) ||
-      h.number.toString().includes(q)
-    );
-  });*/
-
-  /*pages = computed(() =>
-    Array.from({ length: this._lastPage() }, (_, i) => i + 1)
-  );*/
+  private pendingFavorites = new Set<number>();
 
   getHymn(id:number) {
     return this.http.get<Hymn>(`${this.api}/hymns/${id}`);
@@ -65,18 +43,52 @@ export class HymnsService {
     );
   }
 
-  favoriteHymn(id: number) {
-    return this.http.post(`${this.api}/favorites/${id}`,{});
+  favoriteHymn(id: number): Observable<unknown> {
+    if (this.pendingFavorites.has(id)) {
+      return throwError(() => new Error('Request already in flight'));
+    }
+    this.pendingFavorites.add(id);
+    // Optimistic update — flip state NOW before the HTTP call returns
+    this.updateFavoriteState(id, true);
+
+    return this.http.post(`${this.api}/favorites/${id}`, {}).pipe(
+      tap(() => this.pendingFavorites.delete(id)),
+      catchError(err => {
+        // Revert on failure
+        this.updateFavoriteState(id, false);
+        this.pendingFavorites.delete(id);
+        return throwError(() => err);
+      })
+    );
   }
 
-  unfavoriteHymn(id:number) {
-    return this.http.delete(`${this.api}/favorites/${id}`);
+  unfavoriteHymn(id: number): Observable<unknown> {
+    if (this.pendingFavorites.has(id)) {
+      return throwError(() => new Error('Request already in flight'));
+    }
+    this.pendingFavorites.add(id);
+    // Optimistic update
+    this.updateFavoriteState(id, false);
+
+    return this.http.delete(`${this.api}/favorites/${id}`).pipe(
+      tap(() => this.pendingFavorites.delete(id)),
+      catchError(err => {
+        // Revert on failure
+        this.updateFavoriteState(id, true);
+        this.pendingFavorites.delete(id);
+        return throwError(() => err);
+      })
+    );
   }
 
-  updateFavoriteState(id: number, isFavorite: boolean) {
+  updateFavoriteState(id: number, isFavorite: boolean): void {
     this.hymns.update(hymns =>
       hymns.map(h => h.id === id ? { ...h, isFavorite } : h)
     );
+  }
+
+  isPendingFavorite(id: number): boolean {
+    return this.pendingFavorites.has(id);
   }
 
 }

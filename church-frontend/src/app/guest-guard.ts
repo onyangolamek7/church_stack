@@ -1,15 +1,20 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from './services/auth';
+import { map, take } from 'rxjs';
 
 export const guestGuard: CanActivateFn = (route, state) => {
 
   const router = inject(Router);
-  const token = localStorage.getItem('auth_token');
+  const authService = inject(AuthService);
 
-  if(token) {
-    router.navigate(['/profile']);
-    return false;
-  }
-
-  return true;
+  return authService.isAuthenticated$.pipe(
+    take(1),
+    map(isAuthenticated => {
+      if (isAuthenticated) {
+        return router.createUrlTree(['/hymns']);
+      }
+      return true;
+    }),
+  );
 };

@@ -54,6 +54,18 @@ body {
   font-weight: bold;
 }
 
+/* Admin badge in navbar */
+.admin-badge {
+  background: #fff9c4;
+  color: #1b5e20;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -224,7 +236,6 @@ body {
   margin-bottom: 1rem;
   border-left: 4px solid #66bb6a;
 }
-
 
 .main-content {
   padding: 30px;

@@ -1,15 +1,175 @@
-<div *ngIf="user; else notLogged">
+<div class="container" *ngIf="user; else notLogged">
 
-  <h2>My Profile</h2>
+  <!-- ── Profile header ── -->
+  <div class="profile-header card">
+    <div class="profile-avatar">{{ initials }}</div>
+    <div class="profile-info">
+      <h2>{{ user.name }}</h2>
+      <p>{{ user.email }}</p>
+      <p class="diocese-line">📍 {{ user.diocese || 'No diocese set' }}</p>
+      <div class="badges">
+        <span class="badge" [ngClass]="user.role === 'admin' ? 'badge--admin' : 'badge--user'">
+          {{ user.role === 'admin' ? '⭐ Admin' : '🎵 Member' }}
+        </span>
+        <span class="badge badge--since">Member since {{ memberSince }}</span>
+      </div>
+    </div>
+    <button class="btn btn-logout" (click)="logout()">
+      ↩ Sign Out
+    </button>
+  </div>
 
-  <p><strong>Name:</strong> {{ user.name }}</p>
-  <p><strong>Email:</strong> {{ user.email }}</p>
+  <!-- ── Two-column grid ── -->
+  <div class="grid-2">
 
-  <button (click)="logout()">Logout</button>
+    <!-- ── Edit Profile ── -->
+    <div class="card">
+      <h2>Account Details</h2>
+      <p class="card-sub">Update your personal information</p>
+
+      <form (ngSubmit)="saveProfile()" #editProfileForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label for="edit-name">Full Name</label>
+          <input
+            type="text"
+            id="edit-name"
+            [(ngModel)]="editForm.name"
+            name="name"
+            placeholder="Your full name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-email">Email Address</label>
+          <input
+            type="email"
+            id="edit-email"
+            [(ngModel)]="editForm.email"
+            name="email"
+            placeholder="your@email.com"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-diocese">Church Diocese / Branch</label>
+          <select id="edit-diocese" [(ngModel)]="editForm.diocese" name="diocese" required>
+            <option value="" disabled>Select your diocese</option>
+            <option *ngFor="let d of dioceses" [value]="d">{{ d }}</option>
+          </select>
+        </div>
+
+        <div class="form-group form-group--readonly">
+          <label>Account Role</label>
+          <div class="readonly-field">
+            <span class="badge" [ngClass]="user.role === 'admin' ? 'badge--admin' : 'badge--user'">
+              {{ user.role === 'admin' ? '⭐ Admin' : '🎵 Member' }}
+            </span>
+            <span class="readonly-hint">Roles are assigned by an administrator</span>
+          </div>
+        </div>
+
+        <div class="alert alert-success" *ngIf="editSuccess">✓ {{ editSuccess }}</div>
+        <div class="alert alert-error"   *ngIf="editError">{{ editError }}</div>
+
+        <button
+          type="submit"
+          class="btn btn-full"
+          [disabled]="editLoading || !editProfileForm.valid"
+        >
+          {{ editLoading ? 'Saving...' : 'Save Changes' }}
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ── Change Password ── -->
+    <div class="card">
+      <h2>Change Password</h2>
+      <p class="card-sub">Keep your account secure</p>
+
+      <form (ngSubmit)="changePassword()" #pwFormRef="ngForm" novalidate>
+
+        <div class="form-group">
+          <label for="current-pw">Current Password</label>
+          <div class="input-row">
+            <input
+              [type]="showCurrent ? 'text' : 'password'"
+              id="current-pw"
+              [(ngModel)]="pwForm.current_password"
+              name="current_password"
+              placeholder="Your current password"
+              required
+            />
+            <button type="button" class="toggle-pw" (click)="showCurrent = !showCurrent">
+              {{ showCurrent ? '🙈' : '👁️' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="new-pw">New Password</label>
+          <div class="input-row">
+            <input
+              [type]="showNew ? 'text' : 'password'"
+              id="new-pw"
+              [(ngModel)]="pwForm.password"
+              name="password"
+              placeholder="Minimum 6 characters"
+              required
+              minlength="6"
+            />
+            <button type="button" class="toggle-pw" (click)="showNew = !showNew">
+              {{ showNew ? '🙈' : '👁️' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-pw">Confirm New Password</label>
+          <div class="input-row">
+            <input
+              [type]="showConfirm ? 'text' : 'password'"
+              id="confirm-pw"
+              [(ngModel)]="pwForm.password_confirmation"
+              name="password_confirmation"
+              placeholder="Re-enter new password"
+              required
+            />
+            <button type="button" class="toggle-pw" (click)="showConfirm = !showConfirm">
+              {{ showConfirm ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          <span class="mismatch-hint"
+            *ngIf="pwForm.password_confirmation && !passwordsMatch">
+            ⚠️ Passwords do not match
+          </span>
+        </div>
+
+        <div class="alert alert-success" *ngIf="pwSuccess">✓ {{ pwSuccess }}</div>
+        <div class="alert alert-error"   *ngIf="pwError">{{ pwError }}</div>
+
+        <button
+          type="submit"
+          class="btn btn-outline btn-full"
+          [disabled]="pwLoading || !pwFormRef.valid || !passwordsMatch"
+        >
+          {{ pwLoading ? 'Updating...' : 'Update Password' }}
+        </button>
+
+      </form>
+    </div>
+
+  </div><!-- /grid-2 -->
 
 </div>
 
+<!-- ── Not logged in fallback ── -->
 <ng-template #notLogged>
-  <p>You are not logged in.</p>
+  <div class="not-logged">
+    <p>You are not logged in.</p>
+    <a routerLink="/login" class="btn">Go to Login</a>
+  </div>
 </ng-template>
-

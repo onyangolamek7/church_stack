@@ -1,20 +1,116 @@
-<section class="auth-container">
-  <h1>Create Account</h1>
+<div class="auth-wrapper">
+  <div class="auth-card">
 
-  <form (ngSubmit)="register()" #registerForm="ngForm">
+    <div class="auth-header">
+      <div class="auth-icon">✝️</div>
+      <h2>Create Account</h2>
+      <p>Join Israel CA Wende Injili</p>
+    </div>
 
-    <input type="text" [(ngModel)]="form.name" name="name" placeholder="Full Name" required />
-    <input type="email" [(ngModel)]="form.email" name="email" placeholder="Email" required />
-    <input type="password" [(ngModel)]="form.password" name="password" placeholder="Password" required />
+    <form (ngSubmit)="register()" #registerForm="ngForm" novalidate>
 
-    <button type="submit" [disabled]="!registerForm.valid">
-      Register
-    </button>
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          [(ngModel)]="form.name"
+          name="name"
+          placeholder="e.g. John Kamau Mwangi"
+          required
+          autocomplete="name"
+        />
+      </div>
 
-  </form>
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="form.email"
+          name="email"
+          placeholder="your@email.com"
+          required
+          autocomplete="email"
+        />
+      </div>
 
-  <p>
-    Already have an account?
-    <a routerLink="/login">Login</a>
-  </p>
-</section>
+      <!-- Diocese -->
+      <div class="form-group">
+        <label for="diocese">Church Diocese / Branch</label>
+        <select id="diocese" [(ngModel)]="form.diocese" name="diocese" required>
+          <option value="" disabled selected>Select your diocese or branch</option>
+          <option *ngFor="let d of dioceses" [value]="d">{{ d }}</option>
+        </select>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-row">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            [(ngModel)]="form.password"
+            name="password"
+            placeholder="Minimum 6 characters"
+            required
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="toggle-pw"
+            (click)="showPassword = !showPassword"
+          >{{ showPassword ? '🙈' : '👁️' }}</button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="password_confirmation">Confirm Password</label>
+        <div class="input-row">
+          <input
+            [type]="showConfirm ? 'text' : 'password'"
+            id="password_confirmation"
+            [(ngModel)]="form.password_confirmation"
+            name="password_confirmation"
+            placeholder="Re-enter your password"
+            required
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="toggle-pw"
+            (click)="showConfirm = !showConfirm"
+          >{{ showConfirm ? '🙈' : '👁️' }}</button>
+        </div>
+        <span class="mismatch-hint"
+          *ngIf="form.password_confirmation && !passwordsMatch">
+          ⚠️ Passwords do not match
+        </span>
+      </div>
+
+      <!-- Error -->
+      <div class="alert alert-error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-full"
+        [disabled]="loading || !registerForm.valid || !passwordsMatch"
+      >
+        {{ loading ? 'Creating account...' : 'Create Account' }}
+      </button>
+
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+    </div>
+
+  </div>
+</div>

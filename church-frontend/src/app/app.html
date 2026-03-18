@@ -21,15 +21,20 @@
         Tithe
       </a>
 
-      <a routerLink="/profile" *ngIf="isLoggedIn" routerLinkActive="active">
-        Profile
+      <!-- Admin link — only shown to admin users -->
+      <a routerLink="/admin" routerLinkActive="active" *ngIf="isAdmin">
+        <span class="admin-badge">Admin</span>
       </a>
 
-      <a routerLink="/login" *ngIf="!isLoggedIn" routerLinkActive="active">
+      <a routerLink="/profile" routerLinkActive="active" *ngIf="isLoggedIn">
+        👤 {{ userName }}
+      </a>
+
+      <a routerLink="/login" routerLinkActive="active" *ngIf="!isLoggedIn">
         Login
       </a>
 
-      <a routerLink="/" *ngIf="isLoggedIn" (click)="logout()">
+      <a href="#" *ngIf="isLoggedIn" (click)="logout(); $event.preventDefault()">
         Logout
       </a>
     </div>

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './auth-guard';
+import { adminGuard, authGuard } from './auth-guard';
 import { guestGuard } from './guest-guard';
 
 export const routes: Routes = [
@@ -26,7 +26,24 @@ export const routes: Routes = [
   {
     path: 'tithe',
     loadComponent: () =>
-      import('./pages/tithe/tithe').then(m => m.TitheComponent)
+      import('./pages/tithe/tithe').then(m => m.TithePaymentComponent)
+  },
+  {
+    path: 'verify/:reference',
+    loadComponent: () =>
+      import('./pages/tithe/tithe-verify').then(
+        m => m.TitheVerifyComponent,
+      ),
+    title: 'Payment Verified',
+  },
+  {
+    path: 'history',
+    loadComponent: () =>
+      import('./pages/tithe-history/tithe-history').then(
+        m => m.TitheHistoryComponent,
+      ),
+    canActivate: [() => import('./auth-guard').then(m => m.authGuard)],
+    title: 'Tithe History',
   },
   {
     path: 'login',
@@ -35,14 +52,10 @@ export const routes: Routes = [
       import('./pages/auth/login/login').then(m => m.Login)
   },
   {
-    path: 'profile',
+    path: 'register',
+    canActivate: [guestGuard],
     loadComponent: () =>
-      import('./pages/profile/profile').then(m => m.Profile)
-  },
-  {
-    path: 'admin',
-    loadComponent: () =>
-      import('./pages/admin/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard)
+      import('./pages/auth/register/register').then(m => m.Register)
   },
   {
     path: 'profile',
@@ -51,10 +64,10 @@ export const routes: Routes = [
       import('./pages/profile/profile').then(m => m.Profile)
   },
   {
-    path: 'register',
-    canActivate: [guestGuard],
+    path: 'admin',
+    canActivate: [authGuard, adminGuard],
     loadComponent: () =>
-      import('./pages/auth/register/register').then(m => m.Register)
+      import('./pages/admin/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard)
   },
   {
     path: '**',

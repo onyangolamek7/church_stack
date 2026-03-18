@@ -1,1 +1,342 @@
-<p>admin-dashboard works!</p>
+<div class="container">
+
+  <!-- ── Header ── -->
+  <div class="admin-header card">
+    <div class="admin-header__icon">⭐</div>
+    <div class="admin-header__info">
+      <h1>Admin Dashboard</h1>
+      <p>Welcome back, <strong>{{ adminName }}</strong>. You have full administrative access.</p>
+    </div>
+    <span class="badge badge--admin">Administrator</span>
+  </div>
+
+  <!-- ── Tab Navigation ── -->
+  <nav class="tab-nav">
+    <button class="tab-btn" [class.active]="activeTab === 'overview'"  (click)="setTab('overview')">📊 Overview</button>
+    <button class="tab-btn" [class.active]="activeTab === 'users'"     (click)="setTab('users')">👥 Users</button>
+    <button class="tab-btn" [class.active]="activeTab === 'tithes'"    (click)="setTab('tithes')">💰 Tithes</button>
+    <button class="tab-btn" [class.active]="activeTab === 'activity'"  (click)="setTab('activity')">📋 Activity</button>
+    <button class="tab-btn" [class.active]="activeTab === 'hymns'"     (click)="setTab('hymns')">🎵 Hymns</button>
+    <button class="tab-btn" [class.active]="activeTab === 'sermons'"   (click)="setTab('sermons')">📖 Sermons</button>
+  </nav>
+
+  <!-- ════════════ OVERVIEW ════════════ -->
+  <div *ngIf="activeTab === 'overview'">
+    <div class="alert alert-error" *ngIf="statsError">{{ statsError }}</div>
+
+    <div class="stats-grid" *ngIf="!statsLoading; else statsLoaderTpl">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">{{ stats.total_users }}</div>
+        <div class="stat-label">Registered Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">{{ stats.total_tithes }}</div>
+        <div class="stat-label">Tithe Transactions</div>
+      </div>
+      <div class="stat-card stat-card--highlight">
+        <div class="stat-icon">💵</div>
+        <div class="stat-value">KES {{ stats.total_revenue | number }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-value">{{ stats.active_today }}</div>
+        <div class="stat-label">Active Today</div>
+      </div>
+    </div>
+    <ng-template #statsLoaderTpl>
+      <div class="loader-row">
+        <div class="skeleton skeleton--card" *ngFor="let i of [1,2,3,4]"></div>
+      </div>
+    </ng-template>
+
+    <h2 class="section-title">Quick Actions</h2>
+    <div class="grid-2">
+      <button class="action-card" (click)="setTab('hymns')">
+        <div class="action-card__icon">🎵</div>
+        <div><h3>Manage Hymns</h3><p>Add, edit or remove hymns from the library</p></div>
+      </button>
+      <button class="action-card" (click)="setTab('sermons')">
+        <div class="action-card__icon">📖</div>
+        <div><h3>Manage Sermons</h3><p>Schedule, edit and publish sermon content</p></div>
+      </button>
+      <button class="action-card" (click)="setTab('users')">
+        <div class="action-card__icon">👥</div>
+        <div><h3>View All Users</h3><p>Browse registered members and their details</p></div>
+      </button>
+      <button class="action-card" (click)="setTab('tithes')">
+        <div class="action-card__icon">💰</div>
+        <div><h3>Tithe Records</h3><p>View and track all tithe payments</p></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════ USERS ════════════ -->
+  <div *ngIf="activeTab === 'users'">
+    <div class="card">
+      <h2 class="section-title">Registered Users</h2>
+      <div class="alert alert-error" *ngIf="usersError">{{ usersError }}</div>
+
+      <div class="search-box">
+        <input type="text" placeholder="Search by name, email or diocese…"
+          [value]="userSearch" (input)="onUserSearch($event)" />
+      </div>
+
+      <div *ngIf="usersLoading" class="loader-center"><div class="spinner"></div> Loading users…</div>
+
+      <div *ngIf="!usersLoading && filteredUsers.length === 0 && !usersError" class="empty-state">
+        No users found.
+      </div>
+
+      <div class="table-wrapper" *ngIf="!usersLoading && filteredUsers.length">
+        <table class="data-table">
+          <thead>
+            <tr><th>#</th><th>Name</th><th>Email</th><th>Diocese</th><th>Phone</th><th>Role</th><th>Joined</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers">
+              <td class="muted">{{ user.id }}</td>
+              <td><strong>{{ user.name }}</strong></td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.diocese }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge--admin]="user.role === 'admin'"
+                  [class.badge--user]="user.role === 'user'">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td class="muted">{{ user.created_at | date:'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ TITHES ════════════ -->
+  <div *ngIf="activeTab === 'tithes'">
+    <div class="card">
+      <h2 class="section-title">Tithe Payment Records</h2>
+      <div class="alert alert-error" *ngIf="tithesError">{{ tithesError }}</div>
+
+      <div class="search-box">
+        <input type="text" placeholder="Search by name, reference or status…"
+          [value]="titheSearch" (input)="onTitheSearch($event)" />
+      </div>
+
+      <div *ngIf="tithesLoading" class="loader-center"><div class="spinner"></div> Loading records…</div>
+
+      <div *ngIf="!tithesLoading && filteredTithes.length === 0 && !tithesError" class="empty-state">
+        No tithe records found.
+      </div>
+
+      <div class="table-wrapper" *ngIf="!tithesLoading && filteredTithes.length">
+        <table class="data-table">
+          <thead>
+            <tr><th>#</th><th>Member</th><th>Amount</th><th>Reference</th><th>Status</th><th>Date</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of filteredTithes">
+              <td class="muted">{{ t.id }}</td>
+              <td><strong>{{ t.user.name }}</strong><br><span class="muted small">{{ t.user.email }}</span></td>
+              <td><strong>{{ t.currency }} {{ t.amount | number }}</strong></td>
+              <td class="mono">{{ t.reference }}</td>
+              <td><span class="badge" [ngClass]="statusClass(t.status)">{{ t.status }}</span></td>
+              <td class="muted">{{ t.created_at | date:'medium' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="revenue-summary" *ngIf="!tithesLoading && tithes.length">
+        <span>Total Confirmed Revenue:</span>
+        <strong>{{ totalRevenue }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ ACTIVITY ════════════ -->
+  <div *ngIf="activeTab === 'activity'">
+    <div class="card">
+      <h2 class="section-title">User Activity Log</h2>
+      <div class="alert alert-error" *ngIf="activityError">{{ activityError }}</div>
+
+      <div *ngIf="activityLoading" class="loader-center"><div class="spinner"></div> Loading activity…</div>
+
+      <div *ngIf="!activityLoading && activity.length === 0 && !activityError" class="empty-state">
+        No activity recorded yet.
+      </div>
+
+      <ul class="activity-list" *ngIf="!activityLoading && activity.length">
+        <li class="activity-item" *ngFor="let log of activity">
+          <div class="activity-dot"></div>
+          <div class="activity-body">
+            <div class="activity-header">
+              <strong>{{ log.user.name }}</strong>
+              <span class="activity-action">{{ log.action }}</span>
+              <span class="muted small">{{ log.created_at | date:'medium' }}</span>
+            </div>
+            <p class="activity-desc">{{ log.description }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════ HYMNS MANAGEMENT ════════════ -->
+  <div *ngIf="activeTab === 'hymns'">
+    <div class="card">
+      <div class="section-header">
+        <h2 class="section-title">Hymn Management</h2>
+        <button class="btn btn-sm" (click)="startAddHymn()">+ Add Hymn</button>
+      </div>
+
+      <!-- Success / Error banners -->
+      <div class="alert alert-success" *ngIf="hymnSuccess">✓ {{ hymnSuccess }}</div>
+      <div class="alert alert-error"   *ngIf="hymnError">{{ hymnError }}</div>
+
+      <!-- Add / Edit form -->
+      <div class="edit-panel" *ngIf="hymnForm && (hymnEditId !== null || hymnForm.title !== undefined)">
+        <h3>{{ hymnEditId ? 'Edit Hymn #' + hymnEditId : 'Add New Hymn' }}</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hymn Number</label>
+            <input type="number" [(ngModel)]="hymnForm.number" placeholder="e.g. 42" />
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" [(ngModel)]="hymnForm.title" placeholder="Hymn title" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Lyrics</label>
+          <textarea [(ngModel)]="hymnForm.lyrics" rows="8" placeholder="Paste full lyrics here…"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn" (click)="saveHymn()" [disabled]="hymnSaving">
+            {{ hymnSaving ? 'Saving…' : (hymnEditId ? 'Update Hymn' : 'Create Hymn') }}
+          </button>
+          <button class="btn btn-outline" (click)="cancelHymnEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="search-box">
+        <input type="text" placeholder="Search hymns by title or number…"
+          [value]="hymnSearch" (input)="onHymnSearch($event)" />
+      </div>
+
+      <div *ngIf="hymnsLoading" class="loader-center"><div class="spinner"></div> Loading hymns…</div>
+      <div class="alert alert-error" *ngIf="hymnsError">{{ hymnsError }}</div>
+
+      <div class="table-wrapper" *ngIf="!hymnsLoading && filteredHymns.length">
+        <table class="data-table">
+          <thead>
+            <tr><th>#</th><th>Number</th><th>Title</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let hymn of filteredHymns">
+              <td class="muted">{{ hymn.id }}</td>
+              <td>{{ hymn.number }}</td>
+              <td>{{ hymn.title }}</td>
+              <td class="actions-cell">
+                <button class="btn btn-sm btn-outline" (click)="startEditHymn(hymn)">✏️ Edit</button>
+                <button class="btn btn-sm btn-danger"  (click)="confirmDelete('hymn', hymn.id)">🗑 Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ SERMONS MANAGEMENT ════════════ -->
+  <div *ngIf="activeTab === 'sermons'">
+    <div class="card">
+      <div class="section-header">
+        <h2 class="section-title">Sermon Management</h2>
+        <button class="btn btn-sm" (click)="startAddSermon()">+ Add Sermon</button>
+      </div>
+
+      <div class="alert alert-success" *ngIf="sermonSuccess">✓ {{ sermonSuccess }}</div>
+      <div class="alert alert-error"   *ngIf="sermonError">{{ sermonError }}</div>
+
+      <!-- Add / Edit form -->
+      <div class="edit-panel" *ngIf="sermonForm && (sermonEditId !== null || sermonForm.title !== undefined)">
+        <h3>{{ sermonEditId ? 'Edit Sermon' : 'Add New Sermon' }}</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" [(ngModel)]="sermonForm.title" placeholder="Sermon title" />
+          </div>
+          <div class="form-group">
+            <label>Speaker</label>
+            <input type="text" [(ngModel)]="sermonForm.speaker" placeholder="Speaker name" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" [(ngModel)]="sermonForm.date" />
+          </div>
+          <div class="form-group">
+            <label>Video URL (optional)</label>
+            <input type="url" [(ngModel)]="sermonForm.video_url" placeholder="https://youtube.com/..." />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="sermonForm.description" rows="4" placeholder="Sermon description…"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn" (click)="saveSermon()" [disabled]="sermonSaving">
+            {{ sermonSaving ? 'Saving…' : (sermonEditId ? 'Update Sermon' : 'Create Sermon') }}
+          </button>
+          <button class="btn btn-outline" (click)="cancelSermonEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <div *ngIf="sermonsLoading" class="loader-center"><div class="spinner"></div> Loading sermons…</div>
+      <div class="alert alert-error" *ngIf="sermonsError">{{ sermonsError }}</div>
+
+      <div *ngIf="!sermonsLoading && sermons.length === 0 && !sermonsError" class="empty-state">
+        No sermons found.
+      </div>
+
+      <div class="table-wrapper" *ngIf="!sermonsLoading && sermons.length">
+        <table class="data-table">
+          <thead>
+            <tr><th>Title</th><th>Speaker</th><th>Date</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of sermons">
+              <td><strong>{{ s.title }}</strong></td>
+              <td>{{ s.speaker }}</td>
+              <td class="muted">{{ s.date | date:'mediumDate' }}</td>
+              <td class="actions-cell">
+                <button class="btn btn-sm btn-outline" (click)="startEditSermon(s)">✏️ Edit</button>
+                <button class="btn btn-sm btn-danger"  (click)="confirmDelete('sermon', s.id)">🗑 Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ DELETE CONFIRMATION MODAL ════════════ -->
+  <div class="modal-overlay" *ngIf="deleteConfirm" (click)="cancelDelete()">
+    <div class="modal modal--confirm" (click)="$event.stopPropagation()">
+      <h3>Confirm Delete</h3>
+      <p>Are you sure you want to delete this {{ deleteConfirm.type }}? This cannot be undone.</p>
+      <div class="form-actions">
+        <button class="btn btn-danger" (click)="executeDelete()">Yes, Delete</button>
+        <button class="btn btn-outline" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div>

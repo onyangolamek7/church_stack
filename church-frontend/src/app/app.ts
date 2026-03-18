@@ -12,14 +12,20 @@ import { AuthService } from './services/auth';
 })
 export class App {
   protected readonly title = signal('ISRAEL CHURCH OF AFRICA');
-  constructor(private auth:AuthService) {
-    if (this.auth.isLoggedIn()) {
-      this.auth.initBackButtonLogout();
-    }
-  }
+  constructor(private auth:AuthService) {}
 
   get isLoggedIn(): boolean {
     return this.auth.isLoggedIn();
+  }
+
+  get isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+
+  /** Shows first name in the nav */
+  get userName(): string {
+    const name = this.auth.currentUser?.name ?? '';
+    return name.split(' ')[0];
   }
 
   logout(): void {

@@ -1,3 +1,4 @@
+<!--
 <div class="container">
 
   <div class="card">
@@ -34,7 +35,6 @@
     </form>
   </div>
 
-  <!-- Display existing records -->
   <div class="card" *ngIf="tithes.length">
     <h3>Recent Tithes</h3>
     <div *ngFor="let t of tithes">
@@ -47,3 +47,219 @@
   </div>
 
 </div>
+-->
+
+<section class="tithe-page">
+
+  <!-- ═══ PAGE HEADER ═══ -->
+  <div class="tithe-header">
+    <div class="header-icon">🙏</div>
+    <h1 class="header-title">Give Your Tithe</h1>
+    <p class="header-sub">
+      Honor the Lord with your wealth and with the firstfruits of all your produce.
+      <span class="verse-ref">— Proverbs 3:9</span>
+    </p>
+  </div>
+
+  <!-- ═══ CARD ═══ -->
+  <div class="tithe-card">
+
+    <!-- ─── STEP: FORM ─────────────────────────────────────────── -->
+    @if (step() === 'form') {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Amount -->
+        <div class="field-group">
+          <label class="field-label">Tithe Amount</label>
+          <div class="quick-amounts">
+            @for (amt of quickAmounts; track amt) {
+              <button
+                type="button"
+                class="quick-btn"
+                [class.active]="form.get('amount')?.value === amt"
+                (click)="selectQuickAmount(amt)"
+              >
+                {{ amt | number }} <span class="currency-tag">KES</span>
+              </button>
+            }
+          </div>
+          <div class="amount-input-wrap">
+            <span class="currency-prefix">KES</span>
+            <input
+              type="number"
+              formControlName="amount"
+              placeholder="Enter custom amount"
+              class="amount-input"
+              min="1"
+            />
+          </div>
+          @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+            <span class="field-error">Please enter a valid amount (minimum KES 1).</span>
+          }
+        </div>
+
+        <!-- Guest fields -->
+        @if (!isAuthenticated()) {
+          <div class="field-group">
+            <label class="field-label">Full Name <span class="req">*</span></label>
+            <input
+              type="text"
+              formControlName="fullName"
+              placeholder="e.g. John Doe"
+              class="field-input"
+            />
+            @if (form.get('fullName')?.invalid && form.get('fullName')?.touched) {
+              <span class="field-error">Please enter your full name.</span>
+            }
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Email <span class="optional">(optional)</span></label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="john@example.com"
+              class="field-input"
+            />
+          </div>
+        }
+
+        <!-- Auth user profile banner -->
+        @if (isAuthenticated()) {
+          <div class="profile-banner">
+            <div class="profile-avatar">{{ currentUser()?.name?.[0] | uppercase }}</div>
+            <div class="profile-info">
+              <span class="profile-name">{{ currentUser()?.name }}</span>
+              <span class="profile-email">{{ currentUser()?.email }}</span>
+            </div>
+            <span class="profile-badge">Signed in ✓</span>
+          </div>
+        }
+
+        <!-- Phone -->
+        <div class="field-group">
+          <label class="field-label">M-Pesa Phone Number <span class="req">*</span></label>
+          <div class="phone-input-wrap">
+            <span class="phone-prefix">🇰🇪 +254</span>
+            <input
+              type="tel"
+              formControlName="phone"
+              placeholder="07XX XXX XXX"
+              class="phone-input"
+            />
+          </div>
+          @if (form.get('phone')?.errors?.['invalidPhone'] && form.get('phone')?.touched) {
+            <span class="field-error">Enter a valid Kenyan number (e.g. 0712345678).</span>
+          }
+          @if (form.get('phone')?.errors?.['required'] && form.get('phone')?.touched) {
+            <span class="field-error">Phone number is required.</span>
+          }
+        </div>
+
+        <div class="mpesa-notice">
+          <span class="notice-icon">📲</span>
+          You will receive an STK push prompt on the number above. Enter your M-Pesa PIN to complete payment.
+        </div>
+
+        <!-- Error -->
+        @if (errorMessage()) {
+          <div class="error-alert">
+            <span class="error-icon">⚠️</span>
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="form.invalid || isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <span class="spinner"></span> Processing…
+          } @else {
+            📲 Send STK Push
+          }
+        </button>
+
+      </form>
+    }
+
+    <!-- ─── STEP: PROCESSING ────────────────────────────────────── -->
+    @if (step() === 'processing') {
+      <div class="processing-state">
+        <div class="pulse-ring"></div>
+        <div class="processing-icon">📲</div>
+        <h2 class="processing-title">Check Your Phone</h2>
+        <p class="processing-desc">
+          An STK push has been sent to <strong>{{ form.get('phone')?.value }}</strong>.
+          Enter your M-Pesa PIN to complete the payment of
+          <strong>KES {{ paidAmount() | number }}</strong>.
+        </p>
+        <div class="processing-steps">
+          <div class="pstep">1. Check M-Pesa notification on your phone</div>
+          <div class="pstep">2. Enter your M-Pesa PIN when prompted</div>
+          <div class="pstep">3. Wait for confirmation below</div>
+        </div>
+        <div class="polling-indicator">
+          <span class="dot-loader"></span>
+          Waiting for payment confirmation…
+        </div>
+        <button class="cancel-btn" (click)="cancelMpesaPolling()">Cancel</button>
+      </div>
+    }
+
+    <!-- ─── STEP: SUCCESS ───────────────────────────────────────── -->
+    @if (step() === 'success') {
+      <div class="success-state">
+        <div class="success-checkmark">
+          <svg viewBox="0 0 52 52" class="checkmark-svg">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h2 class="success-title">Tithe Received!</h2>
+        <p class="success-desc">
+          Your tithe of <strong>KES {{ paidAmount() | number }}</strong>
+          has been received. May God bless you abundantly. 🙏
+        </p>
+
+        <div class="receipt-card">
+          <div class="receipt-row">
+            <span>Reference</span>
+            <span class="mono">{{ mpesaReference() }}</span>
+          </div>
+          <div class="receipt-row">
+            <span>Method</span>
+            <span>M-Pesa</span>
+          </div>
+          @if (receipt()) {
+            <div class="receipt-row">
+              <span>M-Pesa Receipt</span>
+              <span class="mono">{{ receipt() }}</span>
+            </div>
+          }
+          <div class="receipt-row">
+            <span>Amount</span>
+            <span>KES {{ paidAmount() | number }}</span>
+          </div>
+        </div>
+
+        <button class="submit-btn" (click)="reset()">Give Again</button>
+      </div>
+    }
+
+    <!-- ─── STEP: FAILED ────────────────────────────────────────── -->
+    @if (step() === 'failed') {
+      <div class="failed-state">
+        <div class="failed-icon">😞</div>
+        <h2 class="failed-title">Payment Unsuccessful</h2>
+        <p class="failed-desc">
+          {{ errorMessage() || 'Your payment could not be processed. Please try again.' }}
+        </p>
+        <button class="submit-btn" (click)="reset()">Try Again</button>
+      </div>
+    }
+
+  </div>
+</section>
