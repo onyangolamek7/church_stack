@@ -76,13 +76,6 @@
   font-size: 1.1rem;
 }
 
-/*
-.hymn-lyrics {
-  white-space: pre-wrap;
-  font-family: inherit;
-  margin: 15px;
-} */
-
 .favorite-btn {
   background: none;
   border: none;
@@ -427,7 +420,6 @@ body {
   margin-bottom: 1rem;
   border-left: 4px solid #66bb6a;
 }
-
 
 .main-content {
   padding: 30px;

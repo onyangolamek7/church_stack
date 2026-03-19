@@ -1,4 +1,3 @@
-/* ── CSS Variables ──────────────────────────────────────────── */
 :root {
   --green-dark:  #2e7d32;
   --green-main:  #43a047;
@@ -12,23 +11,18 @@
   --radius:      10px;
   --shadow:      0 3px 15px rgba(0,0,0,0.08);
 }
-
 body {
   font-family: 'Georgia', serif;
   background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
   min-height: 100vh;
 }
-
-/* ── Navbar ─────────────────────────────────────────────────── */
 .navbar {
   background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
   padding: 1rem 2rem;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
 .navbar-brand        { color: white; font-size: 1.8rem; font-weight: bold; text-decoration: none; }
 .navbar-brand:hover  { color: #fff9c4; }
-
 .nav-container {
   max-width: 1100px;
   margin: auto;
@@ -36,9 +30,7 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-
 .logo { color: white; font-weight: bold; font-size: 40px; }
-
 .nav-links a {
   color: white;
   text-decoration: none;
@@ -49,14 +41,11 @@ body {
 }
 .nav-links a:hover  { background: rgba(255,255,255,0.2); }
 .nav-links a.active { border-bottom: 2px solid #38bdf8; background: rgba(255,255,255,0.3); font-weight: bold; }
-
-/* ── Layout ─────────────────────────────────────────────────── */
 .container {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 2rem;
 }
-
 .card {
   background: white;
   padding: 2rem;
@@ -64,15 +53,12 @@ body {
   box-shadow: var(--shadow);
   margin-bottom: 2rem;
 }
-
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
-
-/* ── Admin Header ────────────────────────────────────────────── */
 .admin-header {
   display: flex;
   align-items: center;
@@ -82,13 +68,10 @@ body {
   border-left: 5px solid var(--gold);
   margin-bottom: 2rem;
 }
-
 .admin-header__icon       { font-size: 2.5rem; flex-shrink: 0; }
 .admin-header__info       { flex: 1; }
 .admin-header__info h1    { color: var(--green-dark); font-size: 1.8rem; margin-bottom: 0.2rem; }
 .admin-header__info p     { color: var(--text-mid); font-size: 0.95rem; }
-
-/* ── Tab Navigation ──────────────────────────────────────────── */
 .tab-nav {
   display: flex;
   gap: 0.5rem;
@@ -99,7 +82,6 @@ body {
   box-shadow: var(--shadow);
   flex-wrap: wrap;
 }
-
 .tab-btn {
   flex: 1;
   padding: 0.75rem 1rem;
@@ -113,18 +95,14 @@ body {
   transition: all 0.2s;
   white-space: nowrap;
 }
-
 .tab-btn:hover  { background: var(--green-pale); color: var(--green-dark); }
 .tab-btn.active { background: var(--green-main); color: white; font-weight: bold; }
-
-/* ── Stats Grid ──────────────────────────────────────────────── */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
-
 .stat-card {
   background: white;
   border-radius: var(--radius);
@@ -134,15 +112,11 @@ body {
   border-top: 4px solid var(--green-light);
   transition: transform 0.2s;
 }
-
 .stat-card:hover { transform: translateY(-3px); }
 .stat-card--highlight { border-top-color: var(--gold); }
-
 .stat-icon  { font-size: 2rem; margin-bottom: 0.5rem; }
 .stat-value { font-size: 1.8rem; font-weight: bold; color: var(--green-dark); }
 .stat-label { font-size: 0.85rem; color: var(--text-light); margin-top: 0.3rem; }
-
-/* ── Section Title ───────────────────────────────────────────── */
 .section-title {
   color: var(--green-dark);
   font-size: 1.2rem;
@@ -150,8 +124,6 @@ body {
   padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--green-pale);
 }
-
-/* ── Action Cards ────────────────────────────────────────────── */
 .action-card {
   display: flex;
   align-items: center;
@@ -175,13 +147,11 @@ body {
 .action-card h3         { color: var(--green-dark); font-size: 1.1rem; margin-bottom: 0.2rem; }
 .action-card p          { color: var(--text-light); font-size: 0.88rem; margin: 0; }
 
-/* ── Search Box ──────────────────────────────────────────────── */
 .search-box {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
-
 .search-box input {
   flex: 1;
   padding: 0.8rem 1rem;
@@ -192,20 +162,16 @@ body {
   transition: border-color 0.2s;
 }
 .search-box input:focus { outline: none; border-color: var(--green-main); }
-
-/* ── Data Table ──────────────────────────────────────────────── */
 .table-wrapper {
   overflow-x: auto;
   border-radius: 8px;
   border: 1px solid var(--green-pale);
 }
-
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.93rem;
 }
-
 .data-table thead tr {
   background: linear-gradient(135deg, var(--green-main), var(--green-light));
   color: white;
@@ -235,7 +201,6 @@ body {
 .small  { font-size: 0.8rem; }
 .mono   { font-family: 'Courier New', monospace; font-size: 0.85rem; }
 
-/* ── Badges ──────────────────────────────────────────────────── */
 .badge {
   display: inline-block;
   padding: 3px 12px;
@@ -251,7 +216,6 @@ body {
 .badge--danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 .badge--pending { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 
-/* ── Revenue Summary ─────────────────────────────────────────── */
 .revenue-summary {
   display: flex;
   justify-content: flex-end;
@@ -268,7 +232,6 @@ body {
 
 .revenue-summary strong { font-size: 1.3rem; color: var(--green-dark); }
 
-/* ── Activity List ───────────────────────────────────────────── */
 .activity-list { list-style: none; padding: 0; margin: 0; }
 
 .activity-item {
@@ -278,7 +241,6 @@ body {
   border-bottom: 1px solid #f0f7f0;
 }
 .activity-item:last-child { border-bottom: none; }
-
 .activity-dot {
   width: 12px;
   height: 12px;
@@ -297,7 +259,6 @@ body {
   flex-wrap: wrap;
   margin-bottom: 0.3rem;
 }
-
 .activity-action {
   background: #e8f5e9;
   color: var(--green-dark);
@@ -309,12 +270,9 @@ body {
 
 .activity-desc { color: var(--text-mid); font-size: 0.9rem; margin: 0; }
 
-/* ── Alert ───────────────────────────────────────────────────── */
 .alert         { padding: 1rem; border-radius: 7px; margin-bottom: 1rem; }
 .alert-success { background: #c8e6c9; color: #1b5e20; border-left: 4px solid #4caf50; }
 .alert-error   { background: #ffcdd2; color: #b71c1c; border-left: 4px solid #f44336; }
-
-/* ── Loader / Skeleton ───────────────────────────────────────── */
 .loader-center {
   display: flex;
   align-items: center;
@@ -323,7 +281,6 @@ body {
   color: var(--text-light);
   justify-content: center;
 }
-
 .spinner {
   width: 24px;
   height: 24px;
@@ -332,43 +289,34 @@ body {
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .loader-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
-
 .skeleton {
   border-radius: var(--radius);
   background: linear-gradient(90deg, #e8f5e9 25%, #c8e6c9 50%, #e8f5e9 75%);
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;
 }
-
 .skeleton--card { height: 120px; }
-
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-
 .empty-state {
   text-align: center;
   padding: 3rem;
   color: var(--text-light);
   font-style: italic;
 }
-
-/* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .stats-grid  { grid-template-columns: repeat(2, 1fr); }
   .loader-row  { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 700px) {
   .stats-grid        { grid-template-columns: 1fr; }
   .loader-row        { grid-template-columns: 1fr; }

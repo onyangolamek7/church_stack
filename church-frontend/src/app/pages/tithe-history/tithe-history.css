@@ -22,7 +22,6 @@
   font-family: 'Cormorant Garamond', 'Palatino Linotype', serif;
 }
 
-/* ─── Page layout ─────────────────────────────────────────────── */
 .history-page {
   min-height: 100vh;
   background:
@@ -33,7 +32,6 @@
   margin: 0 auto;
 }
 
-/* ─── Header ──────────────────────────────────────────────────── */
 .history-header {
   display: flex;
   align-items: flex-end;
@@ -87,7 +85,6 @@
 }
 .give-btn:hover { opacity: .9; transform: translateY(-1px); }
 
-/* ─── Stats row ───────────────────────────────────────────────── */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -145,7 +142,6 @@
   color: var(--text-muted);
 }
 
-/* ─── Filters bar ─────────────────────────────────────────────── */
 .filters-bar {
   display: flex;
   flex-wrap: wrap;
@@ -195,7 +191,6 @@
 .chip:hover          { border-color: var(--gold); color: var(--text); }
 .chip--active        { background: rgba(201, 150, 12, 0.14); border-color: var(--gold); color: var(--gold-light); font-weight: 600; }
 
-/* ─── Table ───────────────────────────────────────────────────── */
 .table-wrap {
   overflow-x: auto;
   border-radius: var(--radius);
@@ -249,12 +244,10 @@
 .align-right  { text-align: right; }
 .align-center { text-align: center; }
 
-/* Date cell */
 .cell-date { display: flex; flex-direction: column; gap: .1rem; }
 .date-day  { font-weight: 600; color: var(--text); font-size: .9rem; }
 .date-year { font-size: .75rem; color: var(--text-muted); }
 
-/* Reference */
 .ref-code {
   font-family: 'Courier New', monospace;
   font-size: .8rem;
@@ -266,7 +259,6 @@
   letter-spacing: .03em;
 }
 
-/* Method pill */
 .method-pill {
   display: inline-flex;
   align-items: center;
@@ -291,7 +283,6 @@
   color: #a5b4fc;
 }
 
-/* Amount */
 .amount-value {
   font-weight: 700;
   font-size: .95rem;
@@ -299,7 +290,6 @@
   font-family: 'DM Sans', sans-serif;
 }
 
-/* Status badge */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -329,7 +319,6 @@
 }
 .view-link:hover { color: var(--gold-light); }
 
-/* ─── Mobile cards ────────────────────────────────────────────── */
 .mobile-cards {
   display: none;
   flex-direction: column;
@@ -390,7 +379,6 @@
   white-space: nowrap;
 }
 
-/* ─── Loading skeletons ───────────────────────────────────────── */
 .loading-state { padding: .5rem 0; }
 
 .skeleton-rows {
@@ -442,7 +430,6 @@
   100% { background-position: -200% 0; }
 }
 
-/* ─── Empty / error states ────────────────────────────────────── */
 .empty-state,
 .error-state {
   text-align: center;
@@ -480,7 +467,6 @@
 }
 .retry-btn:hover { border-color: var(--gold); background: rgba(201,150,12,0.07); }
 
-/* ─── Pagination ──────────────────────────────────────────────── */
 .pagination {
   display: flex;
   align-items: center;
@@ -519,7 +505,6 @@
   padding: 0 .2rem;
 }
 
-/* ─── Animations ──────────────────────────────────────────────── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -530,7 +515,6 @@
   to   { opacity: 1; }
 }
 
-/* ─── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 680px) {
   .history-page  { padding: 1.75rem 1rem 4rem; }
   .page-title    { font-size: 1.9rem; }
