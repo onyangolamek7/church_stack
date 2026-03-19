@@ -19,7 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => [
+        'https://sunny-simplicity-production.up.railway.app',
+        'http://localhost:4200',
+        ],
 
     'allowed_origins_patterns' => [],
 
