@@ -9,6 +9,7 @@ use App\Http\Controllers\MpesaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SermonController;
+use Illuminate\Support\Facades\DB;
 
 //public users(no login) can only read hymns
 Route::get('/hymns', [HymnController::class, 'index']);
@@ -96,4 +97,20 @@ Route::prefix('sermons')->group(function () {
     Route::get('/previous', [SermonController::class, 'previous']);
     Route::get('/next', [SermonController::class, 'next']);
     Route::get('/{sermon}', [SermonController::class, 'show']);
+});
+
+Route::get('/db-test', function () {
+    try {
+        DB::connection()->getPdo();
+        $tables = DB::select('SHOW TABLES');
+        return response()->json([
+            'status' => 'connected',
+            'database' => DB::connection()->getDatabaseName(),
+            'host' => config('database.connections.mysql.host'),
+            'port' => config('database.connections.mysql.port'),
+            'tables' => $tables,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
 });
