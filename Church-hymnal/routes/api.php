@@ -120,5 +120,6 @@ Route::get('/db-check', function () {
         'hymns' => DB::table('hymns')->count(),
         'sermons' => DB::table('sermons')->count(),
         'users' => DB::table('users')->count(),
+        'tithe-payments' => DB::table('tithe-payments')->count(),
     ]);
 });
