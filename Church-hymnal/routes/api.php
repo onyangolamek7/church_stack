@@ -114,3 +114,11 @@ Route::get('/db-test', function () {
         return response()->json(['error' => $e->getMessage()]);
     }
 });
+
+Route::get('/db-check', function () {
+    return response()->json([
+        'hymns' => DB::table('hymns')->count(),
+        'sermons' => DB::table('sermons')->count(),
+        'users' => DB::table('users')->count(),
+    ]);
+});
