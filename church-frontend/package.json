@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "serve -s dist/frontend -l $PORT",
-    "build": "ng build",
+    "build": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
