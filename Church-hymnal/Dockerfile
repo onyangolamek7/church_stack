@@ -6,7 +6,6 @@ RUN apt-get update && apt-get install -y \
     nginx curl zip unzip git libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring
 
-# Pipe PHP errors to Railway logs
 RUN echo "log_errors=On" >> /usr/local/etc/php/php.ini
 RUN echo "error_log=/proc/1/fd/2" >> /usr/local/etc/php/php.ini
 
@@ -15,17 +14,13 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Fix storage permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 COPY ./nginx.conf /etc/nginx/sites-enabled/default
+COPY ./start.sh /start.sh
+RUN chmod +x /start.sh
 
 EXPOSE 8080
 
-CMD php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan migrate --force && \
-    php-fpm -D && \
-    sleep 2 && \
-    nginx -g "daemon off;"
+CMD ["/start.sh"]
