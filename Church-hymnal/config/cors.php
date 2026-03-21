@@ -21,7 +21,6 @@ return [
 
     'allowed_origins' => [
         'https://sunny-simplicity-production.up.railway.app',
-        'http://localhost:4200',
         ],
 
     'allowed_origins_patterns' => [],
@@ -32,6 +31,7 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => false,
+
 
 ];
