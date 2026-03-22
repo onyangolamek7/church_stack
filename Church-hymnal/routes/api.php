@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SermonController;
 use Illuminate\Support\Facades\DB;
 
-// TEMPORARY DEBUG - remove after testing
+// TEMPORARY DEBUG
 Route::get('/debug-env', function () {
     return response()->json([
         'app_debug'        => config('app.debug'),
@@ -23,10 +23,10 @@ Route::get('/debug-env', function () {
 });
 
 //public users(no login) can only read hymns
-Route::get('/hymns', [HymnController::class, 'index']);
-Route::get('/hymns/{id}', [HymnController::class, 'show']);
-Route::get('/search', [HymnController::class, 'search']); //search hymns
 Route::get('/hymns/random', [HymnController::class, 'random']);
+Route::get('/hymns/{id}', [HymnController::class, 'show']);
+Route::get('/hymns', [HymnController::class, 'index']);
+Route::get('/search', [HymnController::class, 'search']); //search hymns
 
 //Auth routes
 Route::prefix('auth')->group(function () {
@@ -110,7 +110,7 @@ Route::prefix('sermons')->group(function () {
     Route::get('/{sermon}', [SermonController::class, 'show']);
 });
 
-Route::get('/db-test', function () {
+/*Route::get('/db-test', function () {
     try {
         DB::connection()->getPdo();
         $tables = DB::select('SHOW TABLES');
@@ -124,13 +124,13 @@ Route::get('/db-test', function () {
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()]);
     }
-});
+});*/
 
-Route::get('/db-check', function () {
+/*Route::get('/db-check', function () {
     return response()->json([
         'hymns' => DB::table('hymns')->count(),
         'sermons' => DB::table('sermons')->count(),
         'users' => DB::table('users')->count(),
         'tithe-payments' => DB::table('tithe-payments')->count(),
     ]);
-});
+});*/

@@ -1,38 +1,31 @@
-FROM php:8.2-fpm
-
-WORKDIR /var/www
+FROM php:8.2-fpm-alpine
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    nginx curl zip unzip git \
-    libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# PHP error logging to stdout (visible in Railway logs)
-RUN echo "log_errors=On" >> /usr/local/etc/php/php.ini \
-    && echo "error_log=/proc/1/fd/2" >> /usr/local/etc/php/php.ini
+RUN apk add --no-cache nginx git unzip curl \
+    && docker-php-ext-install pdo pdo_mysql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application source
+WORKDIR /var/www/html
+
+# Copy project
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions for Laravel writable directories
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy nginx config and startup script
-COPY ./nginx.conf /etc/nginx/sites-enabled/default
-COPY ./start.sh /start.sh
-RUN chmod +x /start.sh
+# Expose Laravel's built-in server port
+EXPOSE 8000
 
-# Railway will map $PORT dynamically — no hardcoded EXPOSE needed
-# but we document 8080 as the internal default fallback
-EXPOSE 8080
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'php artisan config:cache' >> /start.sh && \
+    echo 'php artisan route:cache' >> /start.sh && \
+    echo 'php artisan migrate --force' >> /start.sh && \
+    echo 'php artisan serve --host=0.0.0.0 --port=8000' >> /start.sh && \
+    chmod +x /start.sh
 
-CMD ["/start.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

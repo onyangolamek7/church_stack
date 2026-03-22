@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Services\MpesaService;
-use App\Services\StripeService;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +14,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(MpesaService::class);
-        $this->app->singleton(StripeService::class);
     }
 
     /**
@@ -22,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
