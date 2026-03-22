@@ -2,7 +2,7 @@
 
 php artisan config:clear
 php artisan cache:clear
-php artisan migrate --force
+php artisan migrate --force || echo "Migration failed, continuing anyway"
 
 # Start php-fpm in background
 php-fpm -D
