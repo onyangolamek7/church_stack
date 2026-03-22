@@ -20,7 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        env('FRONTEND_URL', 'http://localhost:4200'),
+        env('https://sunny-simplicity-production.up.railway.app', 'http://localhost:4200'),
     ],
 
     'allowed_origins_patterns' => [],

@@ -22,10 +22,11 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 8000
 
 RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'php artisan config:clear' >> /start.sh && \
     echo 'php artisan config:cache' >> /start.sh && \
     echo 'php artisan route:cache' >> /start.sh && \
     echo 'php artisan migrate --force' >> /start.sh && \
     echo 'php artisan serve --host=0.0.0.0 --port=8000' >> /start.sh && \
     chmod +x /start.sh
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["/start.sh"]
