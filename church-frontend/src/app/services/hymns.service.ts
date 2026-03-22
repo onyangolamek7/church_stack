@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { Hymn } from '../models/hymn.model';
 import { Observable, catchError, map, tap, throwError } from 'rxjs';
-import { environment } from '../../environments/environment.prod';
 
 interface HymnResponse {
   data: Hymn[];

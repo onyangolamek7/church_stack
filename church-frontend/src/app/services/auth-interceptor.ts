@@ -22,10 +22,10 @@ export const authInterceptor: HttpInterceptorFn = (
   const authReq = token
     ? req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
+        withCredentials: false,
       })
     : req.clone({
-      withCredentials: true,
+      withCredentials: false,
     });
 
   return next(authReq).pipe(
