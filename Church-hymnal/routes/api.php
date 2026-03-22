@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SermonController;
 use Illuminate\Support\Facades\DB;
 
+// TEMPORARY DEBUG - remove after testing
+Route::get('/debug-env', function () {
+    return response()->json([
+        'app_debug'        => config('app.debug'),
+        'app_env'          => config('app.env'),
+        'app_url'          => config('app.url'),
+        'session_driver'   => config('session.driver'),
+        'cors_credentials' => config('cors.supports_credentials'),
+    ]);
+});
+
 //public users(no login) can only read hymns
 Route::get('/hymns', [HymnController::class, 'index']);
 Route::get('/hymns/{id}', [HymnController::class, 'show']);
