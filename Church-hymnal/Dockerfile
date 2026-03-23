@@ -9,7 +9,7 @@ WORKDIR /var/www/html
 
 COPY . .
 
-COPY docker/nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf.template
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 

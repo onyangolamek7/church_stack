@@ -5,7 +5,7 @@ export PORT=${PORT:-8000}
 echo ">>> Starting on port: $PORT"
 
 # Replace port in nginx template
-sed "s/__PORT__/${PORT}/g" /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
+sed "s/__PORT__/${PORT}/g" /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 echo ">>> Laravel optimization..."
 php artisan config:cache
