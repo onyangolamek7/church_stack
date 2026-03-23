@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\ActivityLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -30,6 +32,8 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'role'     => 'user',
         ]);
+
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
