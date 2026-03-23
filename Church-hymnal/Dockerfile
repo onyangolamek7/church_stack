@@ -17,7 +17,7 @@ RUN echo '#!/bin/sh' > /start.sh && \
     echo 'php artisan config:cache' >> /start.sh && \
     echo 'php artisan route:cache' >> /start.sh && \
     echo 'php artisan migrate --force' >> /start.sh && \
-    echo 'envsubst "$PORT" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /start.sh && \
+    echo 'envsubst "$PORT" < /etc/nginx.conf > /etc/nginx.conf' >> /start.sh && \
     echo 'php-fpm -D' >> /start.sh && \
     echo 'nginx -g "daemon off;"' >> /start.sh && \
     chmod +x /start.sh
