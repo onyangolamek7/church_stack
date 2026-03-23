@@ -9,18 +9,13 @@ WORKDIR /var/www/html
 
 COPY . .
 
+COPY docker/nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
 RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-RUN echo '#!/bin/sh' > /start.sh && \
-    echo 'php artisan config:cache' >> /start.sh && \
-    echo 'php artisan route:cache' >> /start.sh && \
-    echo 'php artisan migrate --force' >> /start.sh && \
-    echo 'envsubst "$PORT" < /etc/nginx.conf > /etc/nginx.conf' >> /start.sh && \
-    echo 'php-fpm -D' >> /start.sh && \
-    echo 'nginx -g "daemon off;"' >> /start.sh && \
-    chmod +x /start.sh
 
 EXPOSE 8000
 
