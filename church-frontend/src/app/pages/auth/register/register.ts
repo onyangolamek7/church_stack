@@ -28,7 +28,6 @@ export class Register {
 
   readonly dioceses = [
     'Nairobi Diocese',
-    'Central Diocese',
     'Coast Diocese',
     'Western Diocese',
     'Nyanza Diocese',
