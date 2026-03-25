@@ -55,8 +55,7 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly base   = `${environment.apiUrl}/auth`;
 
-  // ─── Reactive state ──────────────────────────────────────────
-
+  //Reactive state
   private readonly _currentUser$ = new BehaviorSubject<AuthUser | null>(
     this.loadUserFromStorage(),
   );
@@ -67,8 +66,7 @@ export class AuthService {
     map(user => !!user),
   );
 
-  // ─── Synchronous getters ──────────────────────────────────────
-
+  //Synchronous getters
   get currentUser(): AuthUser | null {
     return this._currentUser$.value;
   }
@@ -93,8 +91,7 @@ export class AuthService {
     this.persistSession(res);
   }
 
-  // ─── Auth actions ─────────────────────────────────────────────
-
+  //Auth actions
   login(payload: LoginPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.base}/login`, payload).pipe(
       tap(res => {
@@ -137,8 +134,7 @@ export class AuthService {
     );
   }
 
-  // ─── Profile actions ──────────────────────────────────────────
-
+  //Profile actions
   getProfile(): Observable<AuthUser> {
     return this.http.get<AuthUser>(`${environment.apiUrl}/profile`).pipe(
       tap(user => {
@@ -166,8 +162,7 @@ export class AuthService {
     );
   }
 
-  // ─── Private helpers ──────────────────────────────────────────
-
+  //Private helpers
   private persistSession(res: AuthResponse): void {
     localStorage.setItem(TOKEN_KEY, res.token);
     localStorage.setItem(USER_KEY, JSON.stringify(res.user));

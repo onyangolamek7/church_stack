@@ -39,15 +39,3 @@ export const adminGuard: CanActivateFn = (
   // Authenticated but not admin — redirect to hymns
   return router.createUrlTree(['/hymns']);
 };
-
-/*export const authGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  const token = localStorage.getItem('auth_token');
-
-  if (!token) {
-    router.navigate(['/login']);
-    return false;
-  }
-  return true;
-};*/

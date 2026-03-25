@@ -6,21 +6,8 @@ use App\Http\Controllers\Api\HymnController;
 use App\Http\Controllers\Api\TitheController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MpesaController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SermonController;
-use Illuminate\Support\Facades\DB;
-
-// TEMPORARY DEBUG
-Route::get('/debug-env', function () {
-    return response()->json([
-        'app_debug'        => config('app.debug'),
-        'app_env'          => config('app.env'),
-        'app_url'          => config('app.url'),
-        'session_driver'   => config('session.driver'),
-        'cors_credentials' => config('cors.supports_credentials'),
-    ]);
-});
 
 //public users(no login) can only read hymns
 Route::get('/hymns/random', [HymnController::class, 'random']);
@@ -110,27 +97,3 @@ Route::prefix('sermons')->group(function () {
     Route::get('/{sermon}', [SermonController::class, 'show']);
 });
 
-/*Route::get('/db-test', function () {
-    try {
-        DB::connection()->getPdo();
-        $tables = DB::select('SHOW TABLES');
-        return response()->json([
-            'status' => 'connected',
-            'database' => DB::connection()->getDatabaseName(),
-            'host' => config('database.connections.mysql.host'),
-            'port' => config('database.connections.mysql.port'),
-            'tables' => $tables,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
-});*/
-
-/*Route::get('/db-check', function () {
-    return response()->json([
-        'hymns' => DB::table('hymns')->count(),
-        'sermons' => DB::table('sermons')->count(),
-        'users' => DB::table('users')->count(),
-        'tithe-payments' => DB::table('tithe-payments')->count(),
-    ]);
-});*/

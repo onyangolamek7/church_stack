@@ -9,8 +9,7 @@ export class TitheService {
   private readonly http = inject(HttpClient);
   private readonly base = `${environment.apiUrl}/tithe`;
 
-  // ─── M-Pesa ──────────────────────────────────────────────────
-
+  //M-Pesa
   initiateMpesa(payload: MpesaTithePayload): Observable<MpesaInitiateResponse> {
     return this.http.post<MpesaInitiateResponse>(`${this.base}/mpesa/initiate`, payload);
   }
@@ -19,9 +18,7 @@ export class TitheService {
     return this.http.get<MpesaStatusResponse>(`${this.base}/mpesa/status/${reference}`);
   }
 
-  /**
-   * Poll M-Pesa status every intervalMs until terminal status or stop$ emits.
-   */
+  //Poll M-Pesa status every intervalMs until terminal status or stop$ emits.
   pollMpesaStatus(
     reference: string,
     stop$: Subject<void>,
@@ -35,8 +32,7 @@ export class TitheService {
     );
   }
 
-  // ─── History ─────────────────────────────────────────────────
-
+  //History
   getHistory(page = 1): Observable<{ data: TitheHistoryItem[]; total: number }> {
     return this.http.get<{ data: TitheHistoryItem[]; total: number }>(
       `${this.base}/history`,
@@ -44,8 +40,7 @@ export class TitheService {
     );
   }
 
-  // ─── Verify ──────────────────────────────────────────────────
-
+  //Verify
   verify(reference: string): Observable<any> {
     return this.http.get(`${this.base}/verify/${reference}`);
   }

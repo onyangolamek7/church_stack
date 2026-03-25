@@ -401,7 +401,6 @@ body {
   border-color: #c62828;
 }
 
-/* ── Card headings ─────────────────────────────────────────── */
 .card h2 {
   color: var(--green-dark);
   font-size: 1.3rem;
@@ -416,7 +415,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* ── Form inputs ───────────────────────────────────────────── */
 .form-group input,
 .form-group select {
   appearance: none;
@@ -460,7 +458,6 @@ body {
   color: #c62828;
 }
 
-/* Readonly role field */
 .form-group--readonly .form-group {
   pointer-events: none;
 }
@@ -480,7 +477,6 @@ body {
   color: var(--text-light);
 }
 
-/* ── Buttons ───────────────────────────────────────────────── */
 .btn-full {
   width: 100%;
   margin-top: 0.5rem;
@@ -504,7 +500,6 @@ body {
   transform: none;
 }
 
-/* ── Not logged in ─────────────────────────────────────────── */
 .not-logged {
   text-align: center;
   padding: 4rem 2rem;
@@ -516,7 +511,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 700px) {
   .profile-header {
     flex-direction: column;

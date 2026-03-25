@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Favorites;
 use App\Models\Hymn;
 
 class FavoriteController extends Controller
@@ -35,27 +34,5 @@ class FavoriteController extends Controller
         $request->user()->favorites()->where('hymn_id', $hymn->id)->delete();
         return response()->json(['message' => 'Removed from favorites']);
     }
-
-    /*public function toggle($hymnId)
-    {
-        $user = auth()->user();
-
-        $favorites = Favorites::where('user_id', $user->id)
-        ->where('hymn_id', $hymnId)
-        ->first();
-
-        if ($favorites) {
-            $favorites->delete();
-            return response()->json(['message' => 'Removed']);
-        }
-
-        Favorites::create([
-            'user_id' => $user->id,
-            'hymn_id' => $hymnId,
-        ]);
-
-        return response()->json(['message' => 'Added']);
-
-    }*/
 
 }

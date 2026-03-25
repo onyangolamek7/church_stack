@@ -19,8 +19,6 @@ export class HymnsService {
 
   //state signals
   hymns = signal<Hymn[]>([]);
-  /*private _loading = signal<boolean>(false);
-  private _error = signal<string | null>(null);*/
 
   currentPage = signal<number>(1);
   lastPage = signal<number>(1);

@@ -123,7 +123,7 @@ export class AdminDashboard implements OnInit {
     return this.auth.currentUser?.name ?? 'Admin';
   }
 
-  // ── Filtered getters ──────────────────────────────────────────
+  //Filtered getters
 
   get filteredUsers(): AdminUser[] {
     const q = this.userSearch.toLowerCase();
@@ -156,13 +156,12 @@ export class AdminDashboard implements OnInit {
 
   get totalRevenue(): string {
     return this.tithes
-      .filter(t => t.status === 'success')
+      .filter(t => t.status === 'completed')
       .reduce((sum, t) => sum + t.amount, 0)
       .toLocaleString('en-KE', { style: 'currency', currency: 'KES' });
   }
 
-  // ── Lifecycle ─────────────────────────────────────────────────
-
+  //Lifecycle
   ngOnInit(): void {
     this.loadStats();
   }
@@ -176,8 +175,7 @@ export class AdminDashboard implements OnInit {
     if (tab === 'sermons'  && !this.sermons.length)  this.loadSermons();
   }
 
-  // ── Loaders ───────────────────────────────────────────────────
-
+  //Loaders
   private loadStats(): void {
     this.statsLoading = true;
     this.statsError   = '';
@@ -254,8 +252,7 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  // ── Hymn CRUD ─────────────────────────────────────────────────
-
+  //Hymn CRUD
   startEditHymn(hymn: Hymn): void {
     this.hymnEditId = hymn.id;
     this.hymnForm   = { ...hymn };

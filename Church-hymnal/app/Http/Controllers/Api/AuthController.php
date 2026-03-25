@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordChangedMail;
+use App\Mail\ProfileUpdatedMail;
 use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -108,6 +110,8 @@ class AuthController extends Controller
 
         $user->update($data);
 
+        Mail::to($user->email)->send(new ProfileUpdatedMail($user->fresh()));
+
         ActivityLogger::log('profile_update', 'User updated their profile', $user->id);
 
         return response()->json([
@@ -136,6 +140,8 @@ class AuthController extends Controller
         $user->update([
             'password' => Hash::make($request->password),
         ]);
+
+        Mail::to($user->email)->send(new PasswordChangedMail($user));
 
         // Revoke all other tokens so old sessions are invalidated after a password change — keeps security tight.
         $currentTokenId = $request->user()->currentAccessToken()->id;

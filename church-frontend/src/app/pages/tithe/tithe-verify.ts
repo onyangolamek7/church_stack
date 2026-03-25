@@ -1,5 +1,3 @@
-// src/app/features/tithe/components/tithe-verify/tithe-verify.component.ts
-
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';

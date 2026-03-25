@@ -7,7 +7,6 @@ use App\Models\User;
 
 class HymnPolicy
 {
-    /** Any authenticated user can view hymns */
     public function viewAny(User $user): bool
     {
         return true;

@@ -9,7 +9,7 @@ class ActivityLog extends Model
 {
     protected $fillable = ['user_id', 'action', 'description', 'ip_address'];
 
-    public $timestamps = true; // uses created_at / updated_at
+    public $timestamps = true;
 
     public function user(): BelongsTo
     {

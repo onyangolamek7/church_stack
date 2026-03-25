@@ -9,13 +9,11 @@ use Illuminate\Http\Request;
 
 class HymnController extends Controller
 {
-    /** GET /api/hymns — public, no auth required */
     public function index(Request $request): JsonResponse
     {
        $perPage = min((int) $request->query('per_page', 20), 999);
         $hymns   = Hymn::orderBy('number')->paginate($perPage);
 
-        // Attach isFavorite for authenticated users in one query (no N+1)
         if ($request->user()) {
             $favoriteIds = $request->user()
                 ->favorites()           // assumes User hasMany Favorite
@@ -37,7 +35,6 @@ class HymnController extends Controller
         return response()->json($hymns);
     }
 
-    /** GET /api/hymns/{id} — public */
     public function show(Request $request, $id): JsonResponse
     {
         $hymn = Hymn::findOrFail($id);
@@ -72,8 +69,6 @@ class HymnController extends Controller
         return response()->json($hymn);
     }
 
-
-    /** POST /api/admin/hymns — admin only (enforced by 'admin' middleware in routes) */
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -93,7 +88,6 @@ class HymnController extends Controller
         ], 201);
     }
 
-    /** PUT /api/hymns/{id} — admin only */
     public function update(Request $request, $id): JsonResponse
     {
         $hymn = Hymn::findOrFail($id);
@@ -115,7 +109,6 @@ class HymnController extends Controller
         ]);
     }
 
-    /** DELETE /api/hymns/{id} — admin only */
     public function destroy(Request $request, $id): JsonResponse
     {
         $hymn = Hymn::findOrFail($id);
