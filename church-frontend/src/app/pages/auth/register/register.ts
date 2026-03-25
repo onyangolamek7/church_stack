@@ -61,7 +61,8 @@ export class Register {
     this.loading = true;
 
     this.auth.register(this.form).subscribe({
-      next: () => {
+      next: (res) => {
+        this.auth.storeAuth(res);
         this.router.navigate(['/profile']);
       },
       error: (err) => {
