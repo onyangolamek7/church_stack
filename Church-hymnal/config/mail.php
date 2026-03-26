@@ -36,9 +36,6 @@ return [
     */
 
     'mailers' => [
-        'sendgrid' => [
-            'transport' => 'sendgrid',
-        ],
 
         'smtp' => [
             'transport' => 'smtp',
