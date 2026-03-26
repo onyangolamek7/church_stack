@@ -8,6 +8,23 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MpesaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SermonController;
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/mail-test', function () {
+    try {
+        Mail::raw('Test from Railway', function ($m) {
+            $m->to('lamekomondi3@gmail.com')
+              ->subject('Railway Mail Test');
+        });
+        return response()->json(['status' => 'Mail sent successfully']);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'Failed',
+            'error'  => $e->getMessage(),
+            'trace'  => $e->getTraceAsString()
+        ]);
+    }
+});
 
 //public users(no login) can only read hymns
 Route::get('/hymns/random', [HymnController::class, 'random']);
