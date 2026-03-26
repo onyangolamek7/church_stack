@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\ActivityLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -35,7 +36,11 @@ class AuthController extends Controller
             'role'     => 'user',
         ]);
 
-        Mail::to($user->email)->send(new WelcomeMail($user));
+        try {
+            Mail::to($user->email)->send(new WelcomeMail($user));
+        } catch (\Exception $e) {
+            Log::error('Mail failed: ' . $e->getMessage());
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
