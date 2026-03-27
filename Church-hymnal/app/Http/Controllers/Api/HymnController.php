@@ -90,6 +90,12 @@ class HymnController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
         $hymn = Hymn::findOrFail($id);
 
         $data = $request->validate([
@@ -100,7 +106,7 @@ class HymnController extends Controller
 
         $hymn->update([
             ...$data,
-            'updated_by' => $request->user()->id,
+            'updated_by' => $user->id,
         ]);
 
         return response()->json([
