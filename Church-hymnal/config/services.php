@@ -18,6 +18,10 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'sendgrid' => [
+        'api_key' => env('SENDGRID_API_KEY'),
+    ],
+
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],
