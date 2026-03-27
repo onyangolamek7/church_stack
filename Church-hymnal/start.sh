@@ -9,6 +9,7 @@ sed "s/__PORT__/${PORT}/g" /etc/nginx/nginx.conf.template > /etc/nginx/nginx.con
 
 echo ">>> Laravel optimization..."
 php artisan config:clear
+php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
