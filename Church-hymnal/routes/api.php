@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SermonController;
 use Illuminate\Support\Facades\Mail;
 
+Route::get('/debug-cors', function () {
+    return response()->json([
+        'allowed_origins' => config('cors.allowed_origins'),
+        'frontend_url_env' => env('FRONTEND_URL'),
+        'supports_credentials' => config('cors.supports_credentials'),
+    ]);
+});
+
 Route::get('/mail-test', function () {
     try {
         Mail::raw('Test from Railway', function ($m) {
