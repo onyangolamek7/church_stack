@@ -20,6 +20,6 @@ class ProfileUpdatedMail extends Mailable
     public function build()
     {
         return $this->subject('Your Profile Has Been Updated – Wende Injili')
-            ->view('emails.profile-updated');
+            ->view('emails.profile-update');
     }
 }

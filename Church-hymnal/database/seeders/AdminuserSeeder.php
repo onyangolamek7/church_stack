@@ -13,8 +13,8 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'onyangolamek7@gmail.com'],
             [
-                'name'     => 'Lamek Onyango',
-                'email'    => 'onyangolamek7@gmail.com',
+                'name'     => 'Samson Owino',
+                'email'    => 'samowino16@gmail.com',
                 'diocese'  => 'Head Office',
                 'password' => Hash::make('Admin@1234'),
                 'role'     => 'admin',
@@ -22,8 +22,8 @@ class AdminUserSeeder extends Seeder
         );
 
         $this->command->info('✅ Admin user created:');
-        $this->command->info('   Name    : Lamek Onyango');
-        $this->command->info('   Email   : onyangolamek7@gmail.com');
+        $this->command->info('   Name    : Samson Owino');
+        $this->command->info('   Email   : samowino16@gmail.com');
         $this->command->info('   Password: Admin@1234');
         $this->command->warn('   ⚠️  Change the password after first login!');
     }

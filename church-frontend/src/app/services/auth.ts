@@ -8,9 +8,11 @@ export interface AuthUser {
   id:                  number;
   name:                string;
   email:               string;
-  diocese:             string;
+  diocese?:             string;
   role:                'user' | 'admin';
   created_at?:         string;
+  last_login_at?:      string;
+  avatar_url?:         string | null;
 }
 
 export interface LoginPayload {
@@ -121,6 +123,7 @@ export class AuthService {
     });
   }
 
+
   fetchCurrentUser(): Observable<AuthUser> {
     return this.http.get<AuthUser>(`${this.base}/me`).pipe(
       tap(user => {
@@ -160,6 +163,38 @@ export class AuthService {
       `${environment.apiUrl}/change-password`,
       payload,
     );
+  }
+
+  uploadAvatar(file: File): Observable<{ message: string; avatar_url: string; user: AuthUser }> {
+    const fd = new FormData();
+    fd.append('avatar', file);
+    return this.http
+      .post<{ message: string; avatar_url: string; user: AuthUser }>(
+        `${environment.apiUrl}/profile/avatar`,
+        fd,
+      )
+      .pipe(
+        tap(res => {
+          // Keep BehaviorSubject and localStorage in sync immediately
+          this._currentUser$.next(res.user);
+          localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+        }),
+        catchError(err => throwError(() => err)),
+      );
+  }
+
+  deleteAvatar(): Observable<{ message: string; user: AuthUser }> {
+    return this.http
+      .delete<{ message: string; user: AuthUser }>(
+        `${environment.apiUrl}/profile/avatar`,
+      )
+      .pipe(
+        tap(res => {
+          this._currentUser$.next(res.user);
+          localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+        }),
+        catchError(err => throwError(() => err)),
+      );
   }
 
   //Private helpers

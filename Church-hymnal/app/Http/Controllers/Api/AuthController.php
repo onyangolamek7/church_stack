@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -114,8 +115,12 @@ class AuthController extends Controller
         ]);
 
         $user->update($data);
+        try {
+            Mail::to($user->email)->send(new ProfileUpdatedMail($user->fresh()));
+        } catch (\Exception $e) {
+            Log::error('ProfileUpdatedMail failed: ' . $e->getMessage());
 
-        Mail::to($user->email)->send(new ProfileUpdatedMail($user->fresh()));
+        }
 
         ActivityLogger::log('profile_update', 'User updated their profile', $user->id);
 
@@ -146,9 +151,13 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        Mail::to($user->email)->send(new PasswordChangedMail($user));
+        try {
+            Mail::to($user->email)->send(new PasswordChangedMail($user));
+        } catch (\Exception $e) {
+            Log::error('PasswordChangedMail failed: ' . $e->getMessage());
+        }
 
-        // Revoke all other tokens so old sessions are invalidated after a password change — keeps security tight.
+        // Revoke all other tokens so old sessions are invalidated after a password change
         $currentTokenId = $request->user()->currentAccessToken()->id;
         $user->tokens()->where('id', '!=', $currentTokenId)->delete();
 
@@ -158,4 +167,48 @@ class AuthController extends Controller
             'message' => 'Password changed successfully.',
         ]);
     }
+
+    /** POST /api/profile/avatar */
+public function uploadAvatar(Request $request): JsonResponse
+{
+    $request->validate([
+        'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+    ]);
+
+    $user = $request->user();
+
+    // Delete old avatar file if one exists
+    if ($user->avatar) {
+        Storage::disk('public')->delete($user->avatar);
+    }
+
+    $path = $request->file('avatar')->store('avatars', 'public');
+    $user->update(['avatar' => $path]);
+
+    ActivityLogger::log('avatar_upload', 'User updated their profile picture', $user->id);
+
+    return response()->json([
+        'message'    => 'Avatar updated successfully.',
+        'avatar_url' => $user->fresh()->avatar_url,
+        'user'       => $user->fresh(),
+    ]);
+}
+
+/** DELETE /api/profile/avatar */
+public function deleteAvatar(Request $request): JsonResponse
+{
+    $user = $request->user();
+
+    if ($user->avatar) {
+        Storage::disk('public')->delete($user->avatar);
+        $user->update(['avatar' => null]);
+    }
+
+    ActivityLogger::log('avatar_remove', 'User removed their profile picture', $user->id);
+
+    return response()->json([
+        'message' => 'Profile picture removed.',
+        'user'    => $user->fresh(),
+    ]);
+}
 }

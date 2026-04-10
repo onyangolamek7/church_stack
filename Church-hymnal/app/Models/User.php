@@ -18,6 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'diocese',
+        'avatar',
         'last_login_at',
     ];
 
@@ -25,6 +26,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    protected $appends = ['avatar_url'];
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar
+        ? asset('storage/' . $this->avatar)
+        : null;
+    }
 
     protected function casts(): array
     {

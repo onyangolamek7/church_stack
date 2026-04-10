@@ -25,25 +25,27 @@ export const routes: Routes = [
   },
   {
     path: 'tithe',
-    loadComponent: () =>
-      import('./pages/tithe/tithe').then(m => m.TithePaymentComponent)
-  },
-  {
-    path: 'verify/:reference',
-    loadComponent: () =>
-      import('./pages/tithe/tithe-verify').then(
-        m => m.TitheVerifyComponent,
-      ),
-    title: 'Payment Verified',
-  },
-  {
-    path: 'history',
-    loadComponent: () =>
-      import('./pages/tithe-history/tithe-history').then(
-        m => m.TitheHistoryComponent,
-      ),
-    canActivate: [() => import('./auth-guard').then(m => m.authGuard)],
-    title: 'Tithe History',
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/tithe/tithe').then(m => m.TithePaymentComponent),
+        title: 'Give Tithe',
+      },
+      {
+        path: 'verify/:reference',
+        loadComponent: () =>
+          import('./pages/tithe/tithe-verify').then(m => m.TitheVerifyComponent),
+        title: 'Payment verified',
+      },
+      {
+        path: 'history',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/tithe-history/tithe-history').then( m => m.TitheHistoryComponent),
+        title: 'Tithe History',
+      },
+    ],
   },
   {
     path: 'login',

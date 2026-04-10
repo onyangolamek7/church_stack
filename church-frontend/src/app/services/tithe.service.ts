@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, interval, switchMap, takeUntil, filter, take, Subject } from 'rxjs';
-import { MpesaInitiateResponse, MpesaStatusResponse, MpesaTithePayload, TitheHistoryItem } from '../models/tithe.model';
+import { MpesaInitiateResponse, MpesaStatusResponse, MpesaTithePayload, TitheHistoryItem, TitheHistoryResponse, TitheVerifyResponse } from '../models/tithe.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -21,7 +21,7 @@ export class TitheService {
   //Poll M-Pesa status every intervalMs until terminal status or stop$ emits.
   pollMpesaStatus(
     reference: string,
-    stop$: Subject<void>,
+    stop$: Observable<void>,
     intervalMs = 4000,
   ): Observable<MpesaStatusResponse> {
     return interval(intervalMs).pipe(
@@ -33,15 +33,15 @@ export class TitheService {
   }
 
   //History
-  getHistory(page = 1): Observable<{ data: TitheHistoryItem[]; total: number }> {
-    return this.http.get<{ data: TitheHistoryItem[]; total: number }>(
+  getHistory(page = 1): Observable<TitheHistoryResponse> {
+    return this.http.get<TitheHistoryResponse>(
       `${this.base}/history`,
       { params: { page: page.toString() } },
     );
   }
 
   //Verify
-  verify(reference: string): Observable<any> {
-    return this.http.get(`${this.base}/verify/${reference}`);
+  verify(reference: string): Observable<TitheVerifyResponse> {
+    return this.http.get<TitheVerifyResponse>(`${this.base}/verify/${reference}`);
   }
 }

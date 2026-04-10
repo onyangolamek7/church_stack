@@ -45,9 +45,13 @@ html, body {
 
 body {
   font-family: 'Lato', sans-serif;
-  background: var(--green-bg);
-  color: var(--text-dark);
-  line-height: 1.6;
+  background-image: url('/assets/images/Pergamo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  min-height: 100vh;
 }
 
 h1, h2, h3 {

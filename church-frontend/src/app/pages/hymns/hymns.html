@@ -16,7 +16,7 @@
     <div
       *ngFor="let hymn of filteredHymns()"
       class="hymn-item"
-      (click)="viewHymn(hymn)"
+      (click)="openHymn(hymn.id)"
     >
       <span class="hymn-number">#{{ hymn.id }}</span>
       <span class="hymn-title">{{ hymn.title }}</span>
@@ -61,15 +61,6 @@
     >
       Next
     </button>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <button class="close-btn" (click)="closeModal()">✕</button>
-      <h2>{{ selectedHymn?.title }}</h2>
-      <p class="lyrics">{{ selectedHymn?.lyrics }}</p>
-    </div>
   </div>
 
 </div>

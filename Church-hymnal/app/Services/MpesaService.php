@@ -30,7 +30,7 @@ class MpesaService
             : 'https://sandbox.safaricom.co.ke';
     }
 
-    // ─────────────────────── Auth ───────────────────────
+    //Auth
 
     public function getAccessToken(): string
     {

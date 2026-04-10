@@ -45,9 +45,9 @@
       <div class="filter-group">
         <span class="filter-label">Method</span>
         <div class="filter-chips">
-          <button class="chip" [class.chip--active]="activeFilter() === 'all'"
+          <button type="button" class="chip" [class.chip--active]="activeFilter() === 'all'"
             (click)="setMethodFilter('all')">All</button>
-          <button class="chip" [class.chip--active]="activeFilter() === 'mpesa'"
+          <button type="button" class="chip" [class.chip--active]="activeFilter() === 'mpesa'"
             (click)="setMethodFilter('mpesa')">📱 M-Pesa</button>
         </div>
       </div>
@@ -55,13 +55,13 @@
       <div class="filter-group">
         <span class="filter-label">Status</span>
         <div class="filter-chips">
-          <button class="chip" [class.chip--active]="activeStatus() === 'all'"
+          <button type="button" class="chip" [class.chip--active]="activeStatus() === 'all'"
             (click)="setStatusFilter('all')">All</button>
-          <button class="chip" [class.chip--active]="activeStatus() === 'completed'"
+          <button type="button" class="chip" [class.chip--active]="activeStatus() === 'completed'"
             (click)="setStatusFilter('completed')">Completed</button>
-          <button class="chip" [class.chip--active]="activeStatus() === 'failed'"
+          <button type="button" class="chip" [class.chip--active]="activeStatus() === 'failed'"
             (click)="setStatusFilter('failed')">Failed</button>
-          <button class="chip" [class.chip--active]="activeStatus() === 'pending'"
+          <button type="button" class="chip" [class.chip--active]="activeStatus() === 'pending'"
             (click)="setStatusFilter('pending')">Pending</button>
         </div>
       </div>
@@ -92,11 +92,11 @@
     <div class="error-state">
       <div class="error-icon">⚠️</div>
       <p>{{ error() }}</p>
-      <button class="retry-btn" (click)="loadPage(currentPage())">Retry</button>
+      <button type="button" class="retry-btn" (click)="loadPage(currentPage())">Retry</button>
     </div>
   }
 
-  <!-- ═══ EMPTY ═══ -->
+  <!-- ═══ EMPTY (no payments at all) ═══ -->
   @if (!loading() && !error() && payments().length === 0) {
     <div class="empty-state">
       <div class="empty-icon">🙏</div>
@@ -145,7 +145,8 @@
               </td>
 
               <td class="cell-method">
-                <span class="method-pill" [class.method-pill--mpesa]="payment.payment_method === 'mpesa'">
+                <span class="method-pill"
+                  [class.method-pill--mpesa]="payment.payment_method === 'mpesa'">
                   {{ methodIcon(payment.payment_method) }}
                   {{ methodLabel(payment.payment_method) }}
                 </span>
@@ -201,23 +202,29 @@
 
     <!-- ═══ PAGINATION ═══ -->
     @if (totalPages() > 1) {
-      <div class="pagination">
-        <button class="page-btn page-btn--nav"
+      <nav class="pagination" aria-label="Tithe history pages">
+
+        <button type="button"
+          class="page-btn page-btn--nav"
           [disabled]="currentPage() === 1"
+          [attr.aria-label]="'Previous page'"
           (click)="goToPage(currentPage() - 1)">
           ← Prev
         </button>
 
         @if (pageNumbers[0] > 1) {
-          <button class="page-btn" (click)="goToPage(1)">1</button>
+          <button type="button" class="page-btn" (click)="goToPage(1)">1</button>
           @if (pageNumbers[0] > 2) {
-            <span class="page-ellipsis">…</span>
+            <span class="page-ellipsis" aria-hidden="true">…</span>
           }
         }
 
         @for (page of pageNumbers; track page) {
-          <button class="page-btn"
+          <button
+            type="button"
+            class="page-btn"
             [class.page-btn--active]="page === currentPage()"
+            [attr.aria-current]="page === currentPage() ? 'page' : null"
             (click)="goToPage(page)">
             {{ page }}
           </button>
@@ -225,17 +232,23 @@
 
         @if (pageNumbers[pageNumbers.length - 1] < totalPages()) {
           @if (pageNumbers[pageNumbers.length - 1] < totalPages() - 1) {
-            <span class="page-ellipsis">…</span>
+            <span class="page-ellipsis" aria-hidden="true">…</span>
           }
-          <button class="page-btn" (click)="goToPage(totalPages())">{{ totalPages() }}</button>
+          <button type="button" class="page-btn" (click)="goToPage(totalPages())">
+            {{ totalPages() }}
+          </button>
         }
 
-        <button class="page-btn page-btn--nav"
+        <button
+          type="button"
+          class="page-btn page-btn--nav"
           [disabled]="currentPage() === totalPages()"
+          [attr.aria-label]="'Next page'"
           (click)="goToPage(currentPage() + 1)">
           Next →
         </button>
-      </div>
+
+      </nav>
     }
 
   }

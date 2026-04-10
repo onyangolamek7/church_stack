@@ -1,9 +1,7 @@
-// src/app/features/tithe/components/tithe-history/tithe-history.component.ts
-
 import {
   Component, OnInit, OnDestroy, inject, signal, computed,
 } from '@angular/core';
-import { CommonModule, DecimalPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { CommonModule, DecimalPipe, DatePipe} from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -20,9 +18,9 @@ import { MethodCountPipe } from './method-count.pipe';
 })
 export class TitheHistoryComponent implements OnInit, OnDestroy {
   private readonly titheService = inject(TitheService);
-  private readonly destroy$     = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
-  //tate
+  //signal state
   readonly loading      = signal(true);
   readonly error        = signal<string | null>(null);
   readonly payments     = signal<TitheHistoryItem[]>([]);
@@ -76,6 +74,9 @@ export class TitheHistoryComponent implements OnInit, OnDestroy {
   loadPage(page: number): void {
     this.loading.set(true);
     this.error.set(null);
+
+    this.activeFilter.set('all');
+    this.activeStatus.set('all');
 
     this.titheService.getHistory(page)
       .pipe(takeUntil(this.destroy$))

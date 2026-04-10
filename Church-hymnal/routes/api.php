@@ -47,6 +47,8 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::put('/profile', [AuthController::class, 'updateprofile']);
+    Route::post('/profile/avatar', [AuthController::class, 'uploadAvatar']);
+    Route::delete('/profile/avatar', [AuthController::class, 'deleteAvatar']);
     Route::post('/change-password', [AuthController::class, 'changepassword']);
     Route::post('/changepassword', [AuthController::class, 'changepassword']);
 });
@@ -66,9 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum','admin'])->prefix('admin')->group(function () {
     // Dashboard stats & data
         Route::get('/stats',    [AdmindashboardController::class, 'stats']);
-        Route::get('/users',    [AdminDashboardController::class, 'users']);
-        Route::get('/tithes',   [AdminDashboardController::class, 'tithes']);
-        Route::get('/activity', [AdminDashboardController::class, 'activity']);
+        Route::get('/users',    [AdmindashboardController::class, 'users']);
+        Route::get('/tithes',   [AdmindashboardController::class, 'tithes']);
+        Route::get('/activity', [AdmindashboardController::class, 'activity']);
 
         // Hymn management
         Route::post('/hymns',        [HymnController::class, 'store']);

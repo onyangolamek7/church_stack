@@ -27,14 +27,14 @@ export class Register {
   showConfirm = false;
 
   readonly dioceses = [
+    'Kisumu Central Diocese',
     'Nairobi Diocese',
-    'Coast Diocese',
-    'Western Diocese',
-    'Nyanza Diocese',
+    'Mombasa Diocese',
+    'Kisumu South Diocese',
+    'Siaya Diocese',
     'Rift Valley Diocese',
-    'Eastern Diocese',
-    'North Eastern Diocese',
-    'Mt. Kenya Diocese',
+    'Upper Milambo Diocese',
+    'Lower Milambo Diocese',
     'Other / Visiting',
   ];
 

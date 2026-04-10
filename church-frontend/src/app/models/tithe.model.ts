@@ -45,3 +45,13 @@ export interface TitheHistoryItem {
   paid_at:        string | null;
   created_at:     string;
 }
+
+export interface TitheHistoryResponse {
+  data: TitheHistoryItem[];
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number | null;
+  to: number | null;
+}

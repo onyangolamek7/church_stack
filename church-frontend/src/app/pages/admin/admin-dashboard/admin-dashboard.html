@@ -1,6 +1,5 @@
 <div class="container">
 
-  <!-- ── Header ── -->
   <div class="admin-header card">
     <div class="admin-header__icon">⭐</div>
     <div class="admin-header__info">
@@ -10,7 +9,6 @@
     <span class="badge badge--admin">Administrator</span>
   </div>
 
-  <!-- ── Tab Navigation ── -->
   <nav class="tab-nav">
     <button class="tab-btn" [class.active]="activeTab === 'overview'"  (click)="setTab('overview')">📊 Overview</button>
     <button class="tab-btn" [class.active]="activeTab === 'users'"     (click)="setTab('users')">👥 Users</button>
@@ -20,7 +18,6 @@
     <button class="tab-btn" [class.active]="activeTab === 'sermons'"   (click)="setTab('sermons')">📖 Sermons</button>
   </nav>
 
-  <!-- ════════════ OVERVIEW ════════════ -->
   <div *ngIf="activeTab === 'overview'">
     <div class="alert alert-error" *ngIf="statsError">{{ statsError }}</div>
 
@@ -73,7 +70,6 @@
     </div>
   </div>
 
-  <!-- ════════════ USERS ════════════ -->
   <div *ngIf="activeTab === 'users'">
     <div class="card">
       <h2 class="section-title">Registered Users</h2>
@@ -93,12 +89,20 @@
       <div class="table-wrapper" *ngIf="!usersLoading && filteredUsers.length">
         <table class="data-table">
           <thead>
-            <tr><th>#</th><th>Name</th><th>Email</th><th>Diocese</th><th>Phone</th><th>Role</th><th>Joined</th></tr>
+            <tr><th>#</th><th>Name</th><th>Email</th><th>Diocese</th><th>Role</th><th>Joined</th></tr>
           </thead>
           <tbody>
             <tr *ngFor="let user of filteredUsers">
               <td class="muted">{{ user.id }}</td>
-              <td><strong>{{ user.name }}</strong></td>
+              <td>
+                <div style="display: flex;align-items:center;gap:8px;">
+                  <span class="admin-user-avatar">
+                    <img *ngIf="user.avatar_url" [src]="user.avatar_url" [alt]="user.name" />
+                    <span *ngIf="!user.avatar_url">{{ user.name[0].toUpperCase() }}</span>
+                  </span>
+                  <strong>{{ user.name }}</strong>
+                </div>
+              </td>
               <td>{{ user.email }}</td>
               <td>{{ user.diocese }}</td>
               <td>
@@ -116,7 +120,6 @@
     </div>
   </div>
 
-  <!-- ════════════ TITHES ════════════ -->
   <div *ngIf="activeTab === 'tithes'">
     <div class="card">
       <h2 class="section-title">Tithe Payment Records</h2>
@@ -141,7 +144,7 @@
           <tbody>
             <tr *ngFor="let t of filteredTithes">
               <td class="muted">{{ t.id }}</td>
-              <td><strong>{{ t.user.name }}</strong><br><span class="muted small">{{ t.user.email }}</span></td>
+              <td><strong>{{ t.user?.name ?? 'Guest' }}</strong><br><span class="muted small">{{ t.user?.email ?? 'N/A' }}</span></td>
               <td><strong>{{ t.currency }} {{ t.amount | number }}</strong></td>
               <td class="mono">{{ t.reference }}</td>
               <td><span class="badge" [ngClass]="statusClass(t.status)">{{ t.status }}</span></td>
@@ -158,7 +161,6 @@
     </div>
   </div>
 
-  <!--ACTIVITY-->
   <div *ngIf="activeTab === 'activity'">
     <div class="card">
       <h2 class="section-title">User Activity Log</h2>
@@ -175,7 +177,7 @@
           <div class="activity-dot"></div>
           <div class="activity-body">
             <div class="activity-header">
-              <strong>{{ log.user.name }}</strong>
+              <strong>{{ log.user?.name ?? 'System' }}</strong>
               <span class="activity-action">{{ log.action }}</span>
               <span class="muted small">{{ log.created_at | date:'medium' }}</span>
             </div>
@@ -186,7 +188,6 @@
     </div>
   </div>
 
-  <!-- ════════════ HYMNS MANAGEMENT ════════════ -->
   <div *ngIf="activeTab === 'hymns'">
     <div class="card">
       <div class="section-header">
@@ -194,11 +195,9 @@
         <button class="btn btn-sm" (click)="startAddHymn()">+ Add Hymn</button>
       </div>
 
-      <!-- Success / Error banners -->
       <div class="alert alert-success" *ngIf="hymnSuccess">✓ {{ hymnSuccess }}</div>
       <div class="alert alert-error"   *ngIf="hymnError">{{ hymnError }}</div>
 
-      <!-- Add / Edit form -->
       <div class="edit-panel" *ngIf="hymnForm && (hymnEditId !== null || hymnForm.title !== undefined)">
         <h3>{{ hymnEditId ? 'Edit Hymn #' + hymnEditId : 'Add New Hymn' }}</h3>
         <div class="form-row">
@@ -223,7 +222,6 @@
         </div>
       </div>
 
-      <!-- Search -->
       <div class="search-box">
         <input type="text" placeholder="Search hymns by title or number…"
           [value]="hymnSearch" (input)="onHymnSearch($event)" />
@@ -253,7 +251,6 @@
     </div>
   </div>
 
-  <!-- ════════════ SERMONS MANAGEMENT ════════════ -->
   <div *ngIf="activeTab === 'sermons'">
     <div class="card">
       <div class="section-header">
@@ -264,7 +261,6 @@
       <div class="alert alert-success" *ngIf="sermonSuccess">✓ {{ sermonSuccess }}</div>
       <div class="alert alert-error"   *ngIf="sermonError">{{ sermonError }}</div>
 
-      <!-- Add / Edit form -->
       <div class="edit-panel" *ngIf="sermonForm && (sermonEditId !== null || sermonForm.title !== undefined)">
         <h3>{{ sermonEditId ? 'Edit Sermon' : 'Add New Sermon' }}</h3>
         <div class="form-row">
@@ -273,14 +269,14 @@
             <input type="text" [(ngModel)]="sermonForm.title" placeholder="Sermon title" />
           </div>
           <div class="form-group">
-            <label>Speaker</label>
-            <input type="text" [(ngModel)]="sermonForm.speaker" placeholder="Speaker name" />
+            <label>Preacher</label>
+            <input type="text" [(ngModel)]="sermonForm.preacher" placeholder="Preacher name" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Date</label>
-            <input type="date" [(ngModel)]="sermonForm.date" />
+            <input type="date" [(ngModel)]="sermonForm.service_date" />
           </div>
           <div class="form-group">
             <label>Video URL (optional)</label>
@@ -309,13 +305,13 @@
       <div class="table-wrapper" *ngIf="!sermonsLoading && sermons.length">
         <table class="data-table">
           <thead>
-            <tr><th>Title</th><th>Speaker</th><th>Date</th><th>Actions</th></tr>
+            <tr><th>Title</th><th>Preacher</th><th>Date</th><th>Actions</th></tr>
           </thead>
           <tbody>
             <tr *ngFor="let s of sermons">
               <td><strong>{{ s.title }}</strong></td>
-              <td>{{ s.speaker }}</td>
-              <td class="muted">{{ s.date | date:'mediumDate' }}</td>
+              <td>{{ s.preacher }}</td>
+              <td class="muted">{{ s.service_date | date:'mediumDate' }}</td>
               <td class="actions-cell">
                 <button class="btn btn-sm btn-outline" (click)="startEditSermon(s)">✏️ Edit</button>
                 <button class="btn btn-sm btn-danger"  (click)="confirmDelete('sermon', s.id)">🗑 Delete</button>
@@ -327,7 +323,6 @@
     </div>
   </div>
 
-  <!-- ════════════ DELETE CONFIRMATION MODAL ════════════ -->
   <div class="modal-overlay" *ngIf="deleteConfirm" (click)="cancelDelete()">
     <div class="modal modal--confirm" (click)="$event.stopPropagation()">
       <h3>Confirm Delete</h3>

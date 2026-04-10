@@ -101,14 +101,7 @@ class TitheController extends Controller
         ]);
     }
 
-    // ═══════════════════════════════════════════════
-    //  SHARED
-    // ═══════════════════════════════════════════════
-
-    /**
-     * GET /api/tithe/history
-     * Authenticated users only.
-     */
+    //Authenticated users only.
     public function history(Request $request): JsonResponse
     {
         $payments = TithePayment::forUser($request->user()->id)
@@ -118,10 +111,6 @@ class TitheController extends Controller
         return response()->json($payments);
     }
 
-    /**
-     * GET /api/tithe/verify/{reference}
-     * Public — used by the verify page.
-     */
     public function verify(string $reference): JsonResponse
     {
         $payment = TithePayment::where('reference', $reference)->firstOrFail();

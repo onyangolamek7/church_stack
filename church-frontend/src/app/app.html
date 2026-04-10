@@ -2,7 +2,7 @@
 
   <div class="nav-container">
 
-    <a routerLink="/" class="navbar-brand">⛪ ISRAEL.CA WENDE INJILI</a>
+    <a routerLink="/" class="navbar-brand">ISRAEL.CA WENDE INJILI</a>
 
     <div class="nav-links">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
@@ -26,8 +26,13 @@
         <span class="admin-badge">Admin</span>
       </a>
 
-      <a routerLink="/profile" routerLinkActive="active" *ngIf="isLoggedIn">
-        👤 {{ userName }}
+      <!-- Profile link with avatar -->
+      <a routerLink="/profile" routerLinkActive="active" *ngIf="isLoggedIn" class="nav-user-link">
+        <span class="nav-avatar" [class.nav-avatar--photo]="userAvatar">
+          <img *ngIf="userAvatar" [src]="userAvatar" [alt]="userName" />
+          <span *ngIf="!userAvatar">{{ userInitial }}</span>
+        </span>
+        {{ userName }}
       </a>
 
       <a routerLink="/login" routerLinkActive="active" *ngIf="!isLoggedIn">

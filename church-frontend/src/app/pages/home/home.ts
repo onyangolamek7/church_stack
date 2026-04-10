@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { SermonService, Sermon } from '../../services/sermon.service';
 import { environment } from '../../../environments/environment';
 
@@ -14,7 +13,6 @@ import { environment } from '../../../environments/environment';
 })
 export class Home implements OnInit {
   private sermonService = inject(SermonService);
-  private http = inject(HttpClient);
   private router = inject(Router);
 
   upcomingSermon = signal<Sermon | null>(null);
@@ -27,14 +25,11 @@ export class Home implements OnInit {
     this.sermonService.getNext().subscribe({
       next: (res) => {
         this.upcomingSermon.set(res.data);
+        this.hymns.set(res.data?.hymns ?? []);
         this.sermonLoading.set(false);
       },
       error: () => this.sermonLoading.set(false)
     });
-
-    // Load featured hymns
-    this.http.get<any[]>(`${environment.apiUrl}/hymns`)
-      .subscribe(res => this.hymns.set(res.slice(0, 5)));
   }
 
   toggleHymn(id: number): void {

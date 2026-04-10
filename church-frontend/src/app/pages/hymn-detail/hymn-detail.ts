@@ -1,9 +1,7 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HymnsService } from '../../services/hymns.service';
 import { AuthService } from '../../services/auth';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 import { Hymn } from '../../models/hymn.model';
 import { CommonModule } from '@angular/common';
 
@@ -19,35 +17,35 @@ export class HymnDetail implements OnInit{
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   hymnsService = inject(HymnsService);
-  //hymnsComponent = inject(HymnsComponent);
   auth = inject(AuthService);
 
-  hymn: Hymn | null = null;
-
-  verses: string[][] = [];
-
-  loading = true;
-  error: string | null = null;
+  hymn = signal<Hymn | null>(null);
+  verses = signal<string[][]>([]);
+  loading = signal(true);
+  error = signal<string | null>(null);
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+    console.log('Hymn ID from route:', id);
 
     this.hymnsService.getHymn(id).subscribe({
       next: (data) => {
-        this.hymn = data;
-        this.prepareVerses(data.lyrics);
-        this.loading = false;
+        console.log('Hymn data:', data);
+        this.hymn.set(data);
+        console.log('Raw lyrics:', JSON.stringify(data.lyrics));
+        this.verses.set(this.prepareVerses(data.lyrics));
+        console.log('Verses parsed:', this.verses);
+        this.loading.set(false);
       },
       error: () => {
-        this.error = 'Failed to load hymn';
-        this.loading = false;
+        this.error.set('Failed to load hymn');
+        this.loading.set(false);
       }
     });
   }
 
-  prepareVerses(lyrics: string) {
-    const verses = lyrics.split('\n\n');
-    this.verses = verses.map(v => v.split('\n'));
+  prepareVerses(lyrics: string): string[][] {
+    return [lyrics.split('\n').filter(l => l.trim().length > 0)];
   }
 
   goBack(): void {
@@ -55,36 +53,24 @@ export class HymnDetail implements OnInit{
   }
 
   toggleFavorite(): void {
-    if (!this.hymn) return;
+    const h = this.hymn();
+    if (!h) return;
 
     if (!this.auth.isLoggedIn()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    if (this.hymn.isFavorite) {
-      this.hymnsService.unfavoriteHymn(this.hymn.id).subscribe(() => {
-        if (this.hymn) this.hymn.isFavorite = false;
+    if (h.isFavorite) {
+      this.hymnsService.unfavoriteHymn(h.id).subscribe(() => {
+        this.hymn.set({ ...h, isFavorite: false });
       });
 
     } else {
-      this.hymnsService.favoriteHymn(this.hymn.id).subscribe(() => {
-        if (this.hymn) this.hymn.isFavorite = true;
+      this.hymnsService.favoriteHymn(h.id).subscribe(() => {
+        this.hymn.set({ ...h, isFavorite: true });
       });
     }
   }
-
-  private idParam = toSignal(
-    this.route.paramMap.pipe(map(p => p.get('id')))
-  );
-
-  private fetchEffect = effect(() => {
-    const id = this.idParam();
-    if (!id) return;
-
-    const hymnId = parseInt(id);
-
-    const cached = this.hymnsService.getHymns(hymnId);
-  });
 
 }

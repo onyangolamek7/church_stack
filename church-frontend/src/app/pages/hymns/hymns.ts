@@ -21,9 +21,6 @@ export class HymnsComponent implements OnInit {
   private router = inject(Router);
 
   searchQuery = signal('');
-
-  selectedHymn: Hymn | null = null;
-  isModalOpen = false;
   pages: number[] = [];
 
   hymns = computed(() => this.hymnsService.hymns());
@@ -40,6 +37,13 @@ export class HymnsComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (this.hymnsService.hymns().length > 0) {
+      this.pages = Array.from(
+        { length: this.hymnsService.lastPage() },
+        (_, i) => i + 1
+      );
+      return;
+    }
     this.loadHymns();
   }
 
@@ -65,23 +69,11 @@ export class HymnsComponent implements OnInit {
     this.router.navigate(['/hymns', id]);
   }
 
-  viewHymn(hymn: Hymn): void {
-    this.selectedHymn = hymn;
-    this.isModalOpen  = true;
-  }
-
-  closeModal(): void {
-    this.isModalOpen  = false;
-    this.selectedHymn = null;
-  }
-
   toggleFavorite(hymn: Hymn, event: Event): void {
     event.stopPropagation();
 
     if (!this.auth.isLoggedIn()) return;
 
-    // FIX: Optimistic updates are now handled inside the service.
-    // We just call the method — the UI reacts immediately via the signal.
     if (hymn.isFavorite) {
       this.hymnsService.unfavoriteHymn(hymn.id).subscribe();
     } else {

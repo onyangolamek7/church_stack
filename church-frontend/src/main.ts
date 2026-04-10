@@ -5,10 +5,12 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app/app.routes';
 import { authInterceptor } from './app/services/auth-interceptor';
+import { authInitializerProvider } from './app/services/auth-initializer';
 
 bootstrapApplication(App, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor])),
+    authInitializerProvider,
   ]
 });

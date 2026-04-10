@@ -21,7 +21,7 @@ export class Login implements OnInit, OnDestroy {
   errorMessage = '';
   showPassword = false;
 
-  //Without this, every time the Login component mounts it adds another listener — they accumulate and all fire on every popstate event.
+  //Without this, every time the Login component mounts it adds another listener they accumulate and all fire on every popstate event.
   private readonly popstateHandler = (): void => {
     if (this.auth.isLoggedIn()) {
       history.forward();
@@ -40,7 +40,6 @@ export class Login implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // FIX: Always clean up — remove the listener when Login unmounts.
     window.removeEventListener('popstate', this.popstateHandler);
   }
 

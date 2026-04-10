@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TitheService } from '../../services/tithe.service';
 import { AuthService } from '../../services/auth';
 import { MpesaInitiateResponse, PaymentStep } from '../../models/tithe.model';
+import { RouterLink } from '@angular/router';
 
 // Kenyan phone validator
 function kenyanPhoneValidator(control: AbstractControl): ValidationErrors | null {
@@ -24,7 +25,7 @@ function kenyanPhoneValidator(control: AbstractControl): ValidationErrors | null
 @Component({
   selector: 'app-tithe-payment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './tithe.html',
   styleUrls: ['./tithe.css'],
 })

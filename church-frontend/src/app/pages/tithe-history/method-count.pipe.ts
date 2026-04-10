@@ -10,7 +10,7 @@ import { PaymentMethod, TitheHistoryItem } from '../../models/tithe.model';
 })
 export class MethodCountPipe implements PipeTransform {
   transform(payments: TitheHistoryItem[], method: PaymentMethod): number {
-    if (!payments?.length) return 0;
+    if (!Array.isArray(payments)) return 0;
     return payments.filter(p => p.payment_method === method).length;
   }
 }

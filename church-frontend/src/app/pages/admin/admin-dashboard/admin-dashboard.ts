@@ -1,4 +1,3 @@
-import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -14,11 +13,12 @@ export interface AdminUser {
   role:        string;
   created_at:  string;
   last_login_at?: string;
+  avatar_url?: string | null;
 }
 
 export interface TitheRecord {
   id:         number;
-  user:       { name: string; email: string };
+  user:       { name: string; email: string } | null;
   amount:     number;
   currency:   string;
   reference:  string;
@@ -28,7 +28,7 @@ export interface TitheRecord {
 
 export interface ActivityLog {
   id:          number;
-  user:        { name: string; email: string };
+  user:        { name: string; email: string } | null;
   action:      string;
   description: string;
   created_at:  string;
@@ -42,19 +42,20 @@ export interface AdminStats {
 }
 
 export interface Hymn {
-  id:     number;
+  id:number;
   number: number;
   title:  string;
   lyrics: string;
 }
 
 export interface Sermon {
-  id:          number;
-  title:       string;
+  id: number;
+  title: string;
   description: string;
-  speaker:     string;
-  date:        string;
+  preacher: string;
+  service_date: string;
   video_url?:  string;
+  audio_url?:  string;
 }
 
 type Tab = 'overview' | 'users' | 'tithes' | 'activity' | 'hymns' | 'sermons';
@@ -139,7 +140,7 @@ export class AdminDashboard implements OnInit {
     const q = this.titheSearch.toLowerCase();
     return q
       ? this.tithes.filter(t =>
-          t.user.name.toLowerCase().includes(q) ||
+          (t.user?.name ?? '').toLowerCase().includes(q) ||
           t.reference.toLowerCase().includes(q) ||
           t.status.toLowerCase().includes(q))
       : this.tithes;
@@ -227,7 +228,6 @@ export class AdminDashboard implements OnInit {
   private loadHymns(): void {
     this.hymnsLoading = true;
     this.hymnsError   = '';
-    // FIX: Use /admin/hymns to get all hymns (no pagination) for management
     this.http.get<any>(`${this.api}/hymns?per_page=999`).subscribe({
       next: res => {
         this.hymns = res.data ?? res;
@@ -339,8 +339,7 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  // ── Sermon CRUD ───────────────────────────────────────────────
-
+  //Sermon CRUD
   startEditSermon(sermon: Sermon): void {
     this.sermonEditId  = sermon.id;
     this.sermonForm    = { ...sermon };
@@ -390,8 +389,7 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  // ── Search handlers ───────────────────────────────────────────
-
+  //Search handlers
   onUserSearch(event: Event):  void { this.userSearch  = (event.target as HTMLInputElement).value; }
   onTitheSearch(event: Event): void { this.titheSearch = (event.target as HTMLInputElement).value; }
   onHymnSearch(event: Event):  void { this.hymnSearch  = (event.target as HTMLInputElement).value; }

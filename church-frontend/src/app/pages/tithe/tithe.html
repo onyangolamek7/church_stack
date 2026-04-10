@@ -2,7 +2,6 @@
 
   <!-- PAGE HEADER -->
   <div class="tithe-header">
-    <div class="header-icon">🙏</div>
     <h1 class="header-title">Give Your Tithe</h1>
     <p class="header-sub">
       Honor the Lord with your wealth and with the firstfruits of all your produce.
@@ -16,6 +15,11 @@
     <!-- STEP: FORM  -->
     @if (step() === 'form') {
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        @if (isAuthenticated()) {
+          <a routerLink="/tithe/history" class="history-link">View Tithe History</a>
+        }
+
 
         <!-- Amount -->
         <div class="field-group">
@@ -106,7 +110,6 @@
         </div>
 
         <div class="mpesa-notice">
-          <span class="notice-icon">📲</span>
           You will receive an STK push prompt on the number above. Enter your M-Pesa PIN to complete payment.
         </div>
 
@@ -127,7 +130,7 @@
           @if (isSubmitting()) {
             <span class="spinner"></span> Processing…
           } @else {
-            📲 Send STK Push
+            Send STK Push
           }
         </button>
 
@@ -194,7 +197,10 @@
           </div>
         </div>
 
-        <button class="submit-btn" (click)="reset()">Give Again</button>
+        <div class="success-actions">
+          <button class="submit-btn" (click)="reset()">Give Again</button>
+          <a routerLink="/tithe/history" class="history-link">View Tithe History</a>
+        </div>
       </div>
     }
 

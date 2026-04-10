@@ -2,22 +2,97 @@
 
   <!-- ── Profile header ── -->
   <div class="profile-header card">
-    <div class="profile-avatar">{{ initials }}</div>
+
+    <!-- Avatar with Change / Remove menu -->
+    <div class="profile-avatar-wrap" (clickOutside)="closeAvatarMenu()">
+
+      <!-- Hidden file input — triggered programmatically -->
+      <input
+        #avatarInput
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        (change)="onAvatarSelected($event, avatarInput)"
+        hidden
+      />
+
+      <!-- Avatar circle — click opens the menu -->
+      <div
+        class="profile-avatar"
+        [class.has-photo]="avatarUrl"
+        (click)="toggleAvatarMenu()"
+        [attr.title]="avatarUploading ? null : 'Change profile picture'"
+      >
+        <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Profile picture" />
+        <span *ngIf="!avatarUrl">{{ initials }}</span>
+
+        <!-- Upload overlay — shown on hover or while uploading -->
+        <div class="avatar-overlay" [class.uploading]="avatarUploading">
+          <span *ngIf="!avatarUploading" class="avatar-overlay__icon">
+            <!-- Upload arrow SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </span>
+          <span *ngIf="avatarUploading" class="spinner-sm"></span>
+        </div>
+      </div>
+
+      <!-- Change / Remove dropdown menu -->
+      <div class="avatar-menu" *ngIf="showAvatarMenu && !avatarUploading">
+        <button class="avatar-menu__item" (click)="triggerFileInput(avatarInput)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Upload new photo
+        </button>
+        <button
+          class="avatar-menu__item avatar-menu__item--danger"
+          *ngIf="user.avatar_url"
+          (click)="removeAvatar()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+          Remove photo
+        </button>
+      </div>
+
+      <!-- Feedback messages -->
+      <div class="alert alert-success avatar-msg" *ngIf="avatarSuccess">{{ avatarSuccess }}</div>
+      <div class="alert alert-error   avatar-msg" *ngIf="avatarError">{{ avatarError }}</div>
+    </div>
+    <!-- /avatar-wrap -->
+
     <div class="profile-info">
       <h2>{{ user.name }}</h2>
       <p>{{ user.email }}</p>
       <p class="diocese-line">📍 {{ user.diocese || 'No diocese set' }}</p>
       <div class="badges">
         <span class="badge" [ngClass]="user.role === 'admin' ? 'badge--admin' : 'badge--user'">
-          {{ user.role === 'admin' ? '⭐ Admin' : '🎵 Member' }}
+          {{ user.role === 'admin' ? '⭐ Admin' : 'Member' }}
         </span>
         <span class="badge badge--since">Member since {{ memberSince }}</span>
       </div>
     </div>
+
     <button class="btn btn-logout" (click)="logout()">
       ↩ Sign Out
     </button>
   </div>
+  <!-- /profile-header -->
 
   <!-- ── Two-column grid ── -->
   <div class="grid-2">
@@ -65,7 +140,7 @@
           <label>Account Role</label>
           <div class="readonly-field">
             <span class="badge" [ngClass]="user.role === 'admin' ? 'badge--admin' : 'badge--user'">
-              {{ user.role === 'admin' ? '⭐ Admin' : '🎵 Member' }}
+              {{ user.role === 'admin' ? '⭐ Admin' : 'Member' }}
             </span>
             <span class="readonly-hint">Roles are assigned by an administrator</span>
           </div>
@@ -160,6 +235,15 @@
         </button>
 
       </form>
+
+      <h2 style="margin-top: 2rem;">Tithe History</h2>
+      <p class="card-sub">A record of your faithful giving</p>
+
+      <div class="tithe-summary">
+        <p>View all your tithe payments, receipts and M-Pesa transaction records.</p>
+        <a routerLink="/tithe/history" class="btn btn-full">View Tithe History</a>
+        <a routerLink="/tithe" class="btn btn-outline btn-full" style="margin-top: 0.5rem;">Give Tithe</a>
+      </div>
     </div>
 
   </div><!-- /grid-2 -->

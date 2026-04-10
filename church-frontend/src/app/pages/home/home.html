@@ -2,7 +2,7 @@
 <div class="hero">
   <h1>Welcome to Wende Injili</h1>
   <p style="color: #558b2f; font-size: 1.2rem; margin-top: 1rem;">
-    Join our community in worship and praise
+    Join our community in worship and praise.
   </p>
 </div>
 
@@ -13,7 +13,7 @@
   <div class="prayer-text">
     <p>
       Our Father, who art in heaven,<br>
-      Hallowed br thy Name.<br>
+      Hallowed be thy Name.<br>
       Thy Kingdom come.<br>
       Thy will be done on earth,<br>
       As it is in heaven.<br>
@@ -33,7 +33,7 @@
 <hr>
 
 <div class="verse-of-day">
-  <h3>📖 Verse of the Day</h3>
+  <h3>Verse of the Day</h3>
   <p class="verse-text">
     "For God so loved the world that he gave his one and only Son,
     that whoever believes in Him shall not perish but have eternal life."
@@ -68,22 +68,6 @@
       <p class="sermon-meta">{{ upcomingSermon()!.preacher }} • {{ formatDate(upcomingSermon()!.service_date) }}</p>
       <p class="sermon-excerpt">{{ upcomingSermon()!.description }}</p>
 
-      @if (upcomingSermon()!.hymns.length) {
-        <div class="hymns-preview">
-          <p class="hymns-label">♪ Featured Hymns</p>
-          @for (hymn of upcomingSermon()!.hymns; track hymn.id) {
-            <div class="hymn-row">
-              <button class="hymn-toggle-btn" (click)="toggleHymn(hymn.id)">
-                ♪ {{ hymn.title }}
-                <span>{{ expandedHymnId() === hymn.id ? '▲' : '▼' }}</span>
-              </button>
-              @if (expandedHymnId() === hymn.id && hymn.lyrics_preview) {
-                <p class="lyrics-preview">{{ hymn.lyrics_preview }}</p>
-              }
-            </div>
-          }
-        </div>
-      }
     </div>
   }
 

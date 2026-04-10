@@ -25,7 +25,7 @@ class AdmindashboardController extends Controller
     public function users(): JsonResponse
     {
         $users = User::orderByDesc('created_at')
-            ->get(['id', 'name', 'email', 'diocese', 'role', 'phone', 'created_at', 'last_login_at']);
+            ->get(['id', 'name', 'email', 'diocese', 'role', 'created_at', 'last_login_at']);
 
         return response()->json($users);
     }

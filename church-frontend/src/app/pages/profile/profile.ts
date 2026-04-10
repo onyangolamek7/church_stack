@@ -2,24 +2,25 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService, AuthUser } from '../../services/auth';
+import { RouterLink } from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-profile',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
 export class Profile implements OnInit, OnDestroy {
   user: AuthUser | null = null;
 
-  // Edit profile form
+  // ── Edit profile form ───────────────────────────────────────────────────────
   editForm    = { name: '', email: '', diocese: '' };
   editLoading = false;
   editSuccess = '';
   editError   = '';
 
-  // Change password form
+  // ── Change password form ────────────────────────────────────────────────────
   pwForm      = { current_password: '', password: '', password_confirmation: '' };
   pwLoading   = false;
   pwSuccess   = '';
@@ -28,18 +29,27 @@ export class Profile implements OnInit, OnDestroy {
   showNew     = false;
   showConfirm = false;
 
-  private editSuccessTimer?: ReturnType<typeof setTimeout>;
-  private pwSuccessTimer?:   ReturnType<typeof setTimeout>;
+  // ── Avatar ──────────────────────────────────────────────────────────────────
+  avatarUploading  = false;
+  avatarSuccess    = '';
+  avatarError      = '';
+  avatarPreview: string | null = null;
+  /** Toggles the Change / Remove mini-menu */
+  showAvatarMenu   = false;
+
+  private editSuccessTimer?:   ReturnType<typeof setTimeout>;
+  private pwSuccessTimer?:     ReturnType<typeof setTimeout>;
+  private avatarSuccessTimer?: ReturnType<typeof setTimeout>;
 
   readonly dioceses = [
-    'Kisumu ArchDiocese',
+    'Kisumu Central Diocese',
     'Nairobi Diocese',
     'Mombasa Diocese',
-    'Western Diocese',
-    'Nyanza Diocese',
+    'Kisumu South Diocese',
+    'Siaya Diocese',
     'Rift Valley Diocese',
-    'Eastern Diocese',
-    'North Eastern Diocese',
+    'Upper Milambo Diocese',
+    'Lower Milambo Diocese',
     'Other / Visiting',
   ];
 
@@ -60,8 +70,10 @@ export class Profile implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     clearTimeout(this.editSuccessTimer);
     clearTimeout(this.pwSuccessTimer);
+    clearTimeout(this.avatarSuccessTimer);
   }
 
+  // ── Computed getters ────────────────────────────────────────────────────────
   get initials(): string {
     return (this.user?.name ?? 'U')
       .split(' ')
@@ -81,6 +93,80 @@ export class Profile implements OnInit, OnDestroy {
     return this.pwForm.password === this.pwForm.password_confirmation;
   }
 
+  get avatarUrl(): string | null {
+    return this.avatarPreview ?? this.user?.avatar_url ?? null;
+  }
+
+  // ── Avatar menu ─────────────────────────────────────────────────────────────
+  toggleAvatarMenu(): void {
+    if (this.avatarUploading) return;
+    this.showAvatarMenu = !this.showAvatarMenu;
+  }
+
+  closeAvatarMenu(): void {
+    this.showAvatarMenu = false;
+  }
+
+  triggerFileInput(input: HTMLInputElement): void {
+    this.showAvatarMenu = false;
+    input.click();
+  }
+
+  onAvatarSelected(event: Event, input: HTMLInputElement): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => (this.avatarPreview = e.target?.result as string);
+    reader.readAsDataURL(file);
+
+    this.avatarUploading = true;
+    this.avatarSuccess   = '';
+    this.avatarError     = '';
+
+    this.auth.uploadAvatar(file).subscribe({
+      next: res => {
+        this.user            = res.user;
+        this.avatarPreview   = null;
+        this.avatarUploading = false;
+        this.avatarSuccess   = res.message;
+        clearTimeout(this.avatarSuccessTimer);
+        this.avatarSuccessTimer = setTimeout(() => (this.avatarSuccess = ''), 4000);
+        input.value = '';
+      },
+      error: err => {
+        this.avatarPreview   = null;
+        this.avatarUploading = false;
+        this.avatarError     = err?.error?.message ?? 'Failed to upload profile picture.';
+        input.value = '';
+      },
+    });
+  }
+
+  removeAvatar(): void {
+    this.showAvatarMenu  = false;
+    if (!this.user?.avatar_url || this.avatarUploading) return;
+
+    this.avatarUploading = true;
+    this.avatarSuccess   = '';
+    this.avatarError     = '';
+
+    this.auth.deleteAvatar().subscribe({
+      next: res => {
+        this.user            = res.user;
+        this.avatarUploading = false;
+        this.avatarSuccess   = 'Profile picture removed.';
+        clearTimeout(this.avatarSuccessTimer);
+        this.avatarSuccessTimer = setTimeout(() => (this.avatarSuccess = ''), 4000);
+      },
+      error: err => {
+        this.avatarUploading = false;
+        this.avatarError     = err?.error?.message ?? 'Failed to remove profile picture.';
+      },
+    });
+  }
+
+  // ── Profile form ─────────────────────────────────────────────────────────────
   private patchEditForm(): void {
     if (this.user) {
       this.editForm.name    = this.user.name;
@@ -98,7 +184,6 @@ export class Profile implements OnInit, OnDestroy {
       next: (res) => {
         this.user        = res.user;
         this.editLoading = false;
-
         this.editSuccess = res.message ?? 'Profile updated successfully!';
         clearTimeout(this.editSuccessTimer);
         this.editSuccessTimer = setTimeout(() => (this.editSuccess = ''), 4000);
@@ -113,6 +198,7 @@ export class Profile implements OnInit, OnDestroy {
     });
   }
 
+  // ── Password form ─────────────────────────────────────────────────────────────
   changePassword(): void {
     this.pwSuccess = '';
     this.pwError   = '';
@@ -129,13 +215,12 @@ export class Profile implements OnInit, OnDestroy {
         this.pwLoading = false;
         this.pwSuccess = res.message ?? 'Password changed successfully!';
         this.pwForm    = { current_password: '', password: '', password_confirmation: '' };
-
         clearTimeout(this.pwSuccessTimer);
         this.pwSuccessTimer = setTimeout(() => (this.pwSuccess = ''), 4000);
       },
       error: (err) => {
         const errors = err?.error?.errors;
-        this.pwError   = errors
+        this.pwError = errors
           ? (Object.values(errors)[0] as string)
           : err?.error?.message ?? 'Failed to change password.';
         this.pwLoading = false;

@@ -34,62 +34,21 @@ class SermonSeeder extends Seeder
             ],
         ];
 
-        $hymnModels = collect($hymns)->map(fn ($h) => Hymn::create($h));
-
-        // --- Completed Sermons ---
-        $completedSermons = [
-            [
-                'title'        => 'Walking in the Light',
-                'preacher'  => 'Pastor James Osei',
-                'description'  => 'An exploration of John 8:12 and what it truly means to follow Christ as the light of the world.',
-                'content'      => '<p>In John 8:12, Jesus declares "I am the light of the world." This profound statement invites us to examine our own walk...</p>',
-                'service_date' => now()->subWeeks(3)->toDateString(),
-                'audio_url'    => 'https://example.com/sermons/walking-in-the-light.mp3',
-                'video_url'    => null,
-                'status'       => 'completed',
-            ],
-            [
-                'title'        => 'The Bread of Life',
-                'preacher'  => 'Elder Ruth Mensah',
-                'description'  => 'Drawing from John 6:35, this message unpacks Christ as the sustainer of our spiritual lives.',
-                'content'      => '<p>Jesus said, "I am the bread of life; whoever comes to me shall not hunger." What does spiritual sustenance look like today?...</p>',
-                'service_date' => now()->subWeeks(2)->toDateString(),
-                'audio_url'    => 'https://example.com/sermons/bread-of-life.mp3',
-                'video_url'    => 'https://youtube.com/watch?v=example1',
-                'status'       => 'completed',
-            ],
-            [
-                'title'        => 'Faith Over Fear',
-                'preacher'  => 'Pastor James Osei',
-                'description'  => 'A timely message from Matthew 14:22-33 on Peter walking on water and the power of unwavering trust.',
-                'content'      => "<p>Peter's bold step onto the water teaches us that faith requires action. When we keep our eyes fixed on Christ...</p>",
-                'service_date' => now()->subWeek()->toDateString(),
-                'audio_url'    => 'https://example.com/sermons/faith-over-fear.mp3',
-                'video_url'    => 'https://youtube.com/watch?v=example2',
-                'status'       => 'completed',
-            ],
-        ];
-
-        foreach ($completedSermons as $i => $data) {
-            $sermon = Sermon::create($data);
-            // Attach 2 hymns per completed sermon
-            $sermon->hymns()->sync([
-                $hymnModels[$i]->id     => ['order' => 1],
-                $hymnModels[$i + 1]->id => ['order' => 2],
-            ]);
-        }
+        $hymnModels = collect($hymns)->map(fn ($h) => Hymn::firstOrCreate(['number' => $h['number']], $h));
 
         // --- Upcoming Sermon (this week) ---
-        Sermon::create([
-            'title'        => 'The Good Shepherd',
-            'preacher'  => 'Pastor James Osei',
-            'description'  => 'Join us this Sunday as we explore Psalm 23 and John 10:11 — the tender care of Christ as our shepherd.',
-            'content'      => '<p>The image of a shepherd was deeply familiar to the original audience of Scripture. Yet today...</p>',
+        $sermon = Sermon::firstOrCreate([
+            'title'        => 'He is Risen: The Victory of Life Over Death',
+            'preacher'  => 'Rev. Yonah Onyango',
+            'description'  => 'An Easter sermon reflecting on the resurrection of Jesus Christ, emphasizing hope, renewal, salvation, and eternal life through Christ’s victory over sin and death.',
+            'content'      => '<p>Easter Sunday stands at the center of the Christian faith. It is not merely a commemoration of an event in history, but the celebration of a living reality—the resurrection of Jesus Christ.</p>',
             'service_date' => now()->next('Sunday')->toDateString(),
             'audio_url'    => null,
             'video_url'    => null,
             'status'       => 'upcoming',
-        ])->hymns()->sync([
+        ]);
+
+        $sermon->hymns()->sync([
             $hymnModels[0]->id => ['order' => 1], // Amazing Grace
             $hymnModels[1]->id => ['order' => 2], // Great Is Thy Faithfulness
             $hymnModels[2]->id => ['order' => 3], // Blessed Assurance
