@@ -63,7 +63,7 @@ export class Register {
     this.auth.register(this.form).subscribe({
       next: (res) => {
         this.auth.storeAuth(res);
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         // Show the first validation error from Laravel, or a fallback

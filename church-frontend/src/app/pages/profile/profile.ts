@@ -4,6 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { AuthService, AuthUser } from '../../services/auth';
 import { RouterLink } from '@angular/router';
 
+interface Toast {
+  id:      number;
+  type:    'success' | 'error';
+  title:   string;
+  message: string;
+}
+
 @Component({
   standalone: true,
   selector: 'app-profile',
@@ -34,8 +41,11 @@ export class Profile implements OnInit, OnDestroy {
   avatarSuccess    = '';
   avatarError      = '';
   avatarPreview: string | null = null;
-  /** Toggles the Change / Remove mini-menu */
   showAvatarMenu   = false;
+
+  // ── Toast notifications ──────────────────────────────────────────────────────
+  toasts: Toast[] = [];
+  private toastCounter = 0;
 
   private editSuccessTimer?:   ReturnType<typeof setTimeout>;
   private pwSuccessTimer?:     ReturnType<typeof setTimeout>;
@@ -71,6 +81,17 @@ export class Profile implements OnInit, OnDestroy {
     clearTimeout(this.editSuccessTimer);
     clearTimeout(this.pwSuccessTimer);
     clearTimeout(this.avatarSuccessTimer);
+  }
+
+  // ── Toast helpers ────────────────────────────────────────────────────────────
+  showToast(type: 'success' | 'error', title: string, message: string): void {
+    const id = ++this.toastCounter;
+    this.toasts.push({ id, type, title, message });
+    setTimeout(() => this.dismissToast(id), 5000);
+  }
+
+  dismissToast(id: number): void {
+    this.toasts = this.toasts.filter(t => t.id !== id);
   }
 
   // ── Computed getters ────────────────────────────────────────────────────────
@@ -183,10 +204,17 @@ export class Profile implements OnInit, OnDestroy {
     this.auth.updateProfile(this.editForm).subscribe({
       next: (res) => {
         this.user        = res.user;
-        this.editLoading = false;
+        this.editLoading = false;                    // ← button resets to "Save Changes"
         this.editSuccess = res.message ?? 'Profile updated successfully!';
         clearTimeout(this.editSuccessTimer);
         this.editSuccessTimer = setTimeout(() => (this.editSuccess = ''), 4000);
+
+        // ── Popup toast ──────────────────────────────────────────────────────
+        this.showToast(
+          'success',
+          'Profile Updated',
+          'Your details have been saved and a confirmation email has been sent to ' + res.user.email + '.',
+        );
       },
       error: (err) => {
         const errors = err?.error?.errors;
@@ -212,11 +240,18 @@ export class Profile implements OnInit, OnDestroy {
 
     this.auth.changePassword(this.pwForm).subscribe({
       next: (res) => {
-        this.pwLoading = false;
+        this.pwLoading = false;                      // ← button resets to "Update Password"
         this.pwSuccess = res.message ?? 'Password changed successfully!';
         this.pwForm    = { current_password: '', password: '', password_confirmation: '' };
         clearTimeout(this.pwSuccessTimer);
         this.pwSuccessTimer = setTimeout(() => (this.pwSuccess = ''), 4000);
+
+        // ── Popup toast ──────────────────────────────────────────────────────
+        this.showToast(
+          'success',
+          'Password Changed',
+          'Your password has been updated. A security notification has been sent to your email.',
+        );
       },
       error: (err) => {
         const errors = err?.error?.errors;
