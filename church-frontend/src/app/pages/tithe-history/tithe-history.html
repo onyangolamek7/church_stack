@@ -147,7 +147,6 @@
               <td class="cell-method">
                 <span class="method-pill"
                   [class.method-pill--mpesa]="payment.payment_method === 'mpesa'">
-                  {{ methodIcon(payment.payment_method) }}
                   {{ methodLabel(payment.payment_method) }}
                 </span>
               </td>
@@ -191,7 +190,7 @@
           <div class="mc-bottom">
             <span class="method-pill"
               [class.method-pill--mpesa]="payment.payment_method === 'mpesa'">
-              {{ methodIcon(payment.payment_method) }} {{ methodLabel(payment.payment_method) }}
+              {{ methodLabel(payment.payment_method) }}
             </span>
             <span class="mc-ref">{{ payment.reference }}</span>
             <a [routerLink]="['/tithe/verify', payment.reference]" class="view-link">View →</a>

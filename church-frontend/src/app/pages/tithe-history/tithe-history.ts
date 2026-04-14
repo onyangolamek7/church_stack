@@ -148,10 +148,6 @@ export class TitheHistoryComponent implements OnInit, OnDestroy {
     return method === 'mpesa' ? 'M-Pesa' : 'Card';
   }
 
-  methodIcon(method: PaymentMethod): string {
-    return method === 'mpesa' ? '📱' : '💳';
-  }
-
   currencyFormat(item: TitheHistoryItem): string {
     return item.currency === 'USD'
       ? `$${Number(item.amount).toFixed(2)}`
