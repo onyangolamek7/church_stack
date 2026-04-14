@@ -158,7 +158,7 @@ export class AdminDashboard implements OnInit {
   get totalRevenue(): string {
     return this.tithes
       .filter(t => t.status === 'completed')
-      .reduce((sum, t) => sum + t.amount, 0)
+      .reduce((sum, t) => sum + Number(t.amount), 0)
       .toLocaleString('en-KE', { style: 'currency', currency: 'KES' });
   }
 
