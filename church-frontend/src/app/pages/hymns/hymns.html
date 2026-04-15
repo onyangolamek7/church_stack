@@ -5,7 +5,7 @@
   <div class="search-box">
     <input
       type="text"
-      placeholder="Search by title or hymn number..."
+      placeholder="Search by title..."
       [value]="searchQuery()"
       (input)="onSearch($any($event.target).value)"
     />
@@ -21,13 +21,12 @@
       <span class="hymn-number">#{{ hymn.id }}</span>
       <span class="hymn-title">{{ hymn.title }}</span>
 
-      <!-- FIX: Disable button while HTTP request is in-flight (prevents double-tap) -->
       <button
         *ngIf="auth.isLoggedIn()"
         class="favorite-btn"
         [disabled]="hymnsService.isPendingFavorite(hymn.id)"
         (click)="toggleFavorite(hymn, $event)"
-        [title]="hymn.isFavorite ? 'Remove from favourites' : 'Add to favourites'"
+        [title]="hymn.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
       >
         {{ hymn.isFavorite ? '❤️' : '🤍' }}
       </button>
