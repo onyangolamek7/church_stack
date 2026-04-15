@@ -10,9 +10,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\ActivityLogger;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -54,10 +56,10 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /** POST /api/auth/login */
+    /*
     public function login(Request $request): JsonResponse
     {
-        $data = $request->validate([
+
             'email'    => 'required|email',
             'password' => 'required',
         ]);
@@ -80,6 +82,45 @@ class AuthController extends Controller
             'user'  => $user,
             'token' => $token,
         ]);
+    }
+        */
+    public function login(Request $request): JsonResponse
+    {
+        $key = 'login:' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key); //how many seconds until they can try again
+
+            ActivityLogger::log(
+                'login_throttled',
+                "Login rate-limited from IP: {request->ip()}",
+                null,
+                $request->ip()
+            );
+
+            return response()->json([
+                'message' => "Too many login attempts. Please try again in {$seconds} seconds."
+            ], 429);
+        }
+
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (!Auth::attempt($credentials)) {
+            RateLimiter::hit($key, 60); //block for 60 seconds after 5 failed attempts
+            return response()->json([
+                'message' => 'Invalid credentials.'
+            ], 401);
+        }
+
+        RateLimiter::clear($key); //clear failed attempts on successful login
+
+        return response()->json([
+            'message' => 'Login successful.',
+            'token'   => $request->user()->createToken('auth_token')->plainTextToken,
+        ], 200);
     }
 
     /** POST /api/auth/logout */
