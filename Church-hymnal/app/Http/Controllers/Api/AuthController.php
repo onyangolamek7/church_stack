@@ -56,34 +56,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /*
-    public function login(Request $request): JsonResponse
-    {
-
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('email', $data['email'])->first();
-
-        if (!$user || !Hash::check($data['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        $user->update(['last_login_at' => now()]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        ActivityLogger::log('login', "User logged in from IP: {$request->ip()}", $user->id);
-
-        return response()->json([
-            'user'  => $user,
-            'token' => $token,
-        ]);
-    }
-        */
     public function login(Request $request): JsonResponse
     {
         $key = 'login:' . $request->ip();
